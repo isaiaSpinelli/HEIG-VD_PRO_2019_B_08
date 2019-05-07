@@ -400,16 +400,16 @@ public class HomeController extends Controller {
         {
             return redirect("/profil");
         }
-        return ok(views.html.historique.render("Historique",user,1,1,1));
+        return ok(views.html.historique.render("Historique",user,1));
     }
 
-    public Result historiqueCat(int cat,int pAll,int pCat)
+    public Result historiqueCat(int cat)
     {
         if(user.getId() == 0)
         {
             return redirect("/profil");
         }
-        return ok(views.html.historique.render("Historique",user,cat,pAll,pCat));
+        return ok(views.html.historique.render("Historique",user,cat));
     }
 
     /* Permet de créer le PDF de l'historique d'un utilisateur*/

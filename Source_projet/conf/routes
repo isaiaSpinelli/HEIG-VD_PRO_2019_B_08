@@ -19,7 +19,7 @@ GET     /modifoptions                  controllers.HomeController.ModifOptionsSu
 POST    /modifprofile                  controllers.HomeController.ModifProfile
 GET     /historique                    controllers.HomeController.Historique
 POST    /AddExpense                    controllers.HomeController.AddExpense
-GET     /historiqueCat                 controllers.HomeController.historiqueCat(cat : Integer,pAll : Integer,pCat : Integer)
+GET     /historiqueCat                 controllers.HomeController.historiqueCat(cat : Integer)
 
 
 
