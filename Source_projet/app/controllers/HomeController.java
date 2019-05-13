@@ -234,7 +234,7 @@ public class HomeController extends Controller {
         else {
             // Sinon, affiche les catégorie
             ArrayList<Categorie> listCategorie = new ArrayList<Categorie>();
-            listCategorie = DB.display_Categories();
+            listCategorie = DB.get_Categories();
 
             return ok(views.html.Categorie.render(listCategorie, user));
         }
@@ -244,7 +244,7 @@ public class HomeController extends Controller {
    public Result sousCategorie(String defaultSelect ) {
         // Envoie la liste de toute les catégories au HTML
        ArrayList<Categorie> listCategorie = new ArrayList<Categorie>();
-       listCategorie = DB.display_Categories();
+       listCategorie = DB.get_Categories();
 
         return ok( views.html.sousCategorie.render( listCategorie, defaultSelect,user) );
     }

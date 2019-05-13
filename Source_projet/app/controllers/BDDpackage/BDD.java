@@ -34,22 +34,39 @@ import com.zaxxer.hikari.HikariDataSource;
 
 
 
-/** Base de donnée.
+/** Base de donnée (Connections et Requêtes)
  * @author Compact budget
  * @version 1.0
  * @since 1.0
  */
 public class BDD {
-    // Par defaut
+    /**
+     * l'url de la base de donnée
+     */
     private static String url = "jdbc:postgresql://127.0.0.1:5432/BD_Budget";
+    /**
+     * le nom d'utilisateur de la base de donnée
+     */
     private static String user = "postgres";
+    /**
+     * le mot de passe de la base de donnée (ne devrait pas être en clair)
+     */
     private static String password = "123456789";
+    /**
+     * le driver de postgresql
+     */
     private static String driver = "org.postgresql.Driver";
 
     // Pour Gab
     // private Connection conn = null;
 
+    /**
+     * Le pool des connections pour la base de donnée
+     */
     private static DataSource pool;
+    /**
+     * la configuration pour le pool
+     */
     private static HikariConfig config = new HikariConfig();
 
     /*
@@ -66,13 +83,27 @@ public class BDD {
         pool = new HikariDataSource(config);
     }*/
 
+    /**
+     * Retourne le nom de l'utilisateur
+     * @return le nom de l'utilisateur de la base de donnée (String)
+     */
     public String getUser(){
         return user;
     }
 
+    /**
+     * Constructeur par defaut
+     */
     public BDD(){
         this.Connection();
     }
+
+    /**
+     * Constructeur en donnant les config de la BDD
+     * @param url       url de la base de donnée
+     * @param user      user de la base de donnée
+     * @param password  password de la base de donnée
+     */
     // Permet de mettre à jour les configurations de la base de donées
     public BDD(String url, String user, String password){
         this.url = url;
@@ -92,7 +123,9 @@ public class BDD {
 
     }
 
-    // Permet de mettre en place le pooling des connections à la base de donnée
+    /** Met en place le pooling des connections à la base de donnée
+     *
+     */
     private void Connection(){
 
 
@@ -144,6 +177,9 @@ public class BDD {
         pool = new HikariDataSource(config);
     }
 
+    /** Retourne le pool des connections JDBC
+     * @return le pool (DataSource)
+     */
     public static DataSource getDataSource(){
         return pool;
     }
@@ -397,7 +433,7 @@ public class BDD {
     }
 
     /**
-     * Find users by his/her ID
+     * Cherche un utilisateur en fonciton de son ID
      *
      * @param UtilisateurID l'id de l'utilisateur
      * @return l'Utilisateur trouvé, ou null si pas trouvé
@@ -448,11 +484,9 @@ public class BDD {
 
     }
 
-    /**
-     * Display users
-     *
-     * @param
-     * @throws SQLException
+
+    /** Permet d'avoir une liste des utilisateurs de la base de donnée
+     * @return Une liste des utilisateurs enregistré dans la base de donnée
      */
     private ArrayList<String> display_Utilisateurs(){
 
@@ -487,11 +521,19 @@ public class BDD {
     }
 
 
-    /**
-     * Permet de gérer l'enregistrement d'un utilisateur
-     *
-     * @params ...
-     * @throws null
+    /** Ajoute un user dans la base de donnée
+     * @param prenom        prenom de l'utilisateur
+     * @param nom           nom de l'utilisateur
+     * @param email         email de l'utilisateur
+     * @param pseudo        pseudo de l'utilisateur
+     * @param mdp           mdp de l'utilisateur (hashé)
+     * @param genre         genre de l'utilisateur
+     * @param anniversaire  anniversaire de l'utilisateur
+     * @param statut        statut de l'utilisateur
+     * @param Pays          Pays de l'utilisateur
+     * @param Option        Option de l'utilisateur
+     * @param solde         solde de l'utilisateur
+     * @return
      */
     public int addUser(String prenom, String nom, String email, String pseudo, String mdp,
                        String genre, String anniversaire,int statut,int Pays,int Option,double solde){
@@ -500,11 +542,10 @@ public class BDD {
     }
 
 
-    /**
-     * Permet de verifier la validiter du nouveau utilisateur
-     *
-     * @params email,pseudo
-     * @throws
+    /** Permet de verifier la validiter du nouveau utilisateur
+     * @param email
+     * @param pseudo
+     * @return
      */
     private boolean checkUniqueUser(String email, String pseudo){
 
@@ -517,11 +558,11 @@ public class BDD {
     }
 
 
-    /**
-     * Permet de verifier la validité d'une modification de profil (Nom et email)
-     *
-     * @params email,pseudo,userId
-     * @throws
+    /** Permet de verifier la validité d'une modification de profil (Nom et email)
+     * @param email
+     * @param pseudo
+     * @param userId
+     * @return
      */
     private boolean checkUniqueUserWithId(String email, String pseudo, int userId) {
         Connection conn = null;
@@ -549,11 +590,20 @@ public class BDD {
 
     }
 
-    /**
-     * Permet d'insérer un nouveau utilisateur à la BDD
-     *
-     * @params ...
-     * @throws
+
+    /** Permet d'insérer un nouveau utilisateur à la BDD
+     * @param prenom
+     * @param nom
+     * @param email
+     * @param pseudo
+     * @param mdp
+     * @param genre
+     * @param anniversaire
+     * @param statut_id
+     * @param pays_id
+     * @param options_id
+     * @param solde
+     * @return retourne l'ID du user ou 0 en cas d'echec
      */
     private int insert_Utilisateurs(String prenom, String nom,String email,String pseudo,String mdp,Boolean genre,String anniversaire,int statut_id, int pays_id, int options_id, double solde){
         int droit_id = 2;
@@ -587,12 +637,11 @@ public class BDD {
         return ok;
     }
 
-    /**
-     * Check COnnection and get ID back
-     *
-     * @param String passwd (Mot de passe)
-     * @param String userN (Nom de l'utilisateur)
-     * @throws SQLException
+
+    /** Controle la connection et récupère l'id
+     * @param passwd    mot de passe
+     * @param userN     Nom de l'utilisateur
+     * @return l'id du user ou 0 en cas d'echec
      */
     public int checkConnectionGetId(String passwd, String userN){
 
@@ -637,11 +686,9 @@ public class BDD {
         return 0;
     }
 
-    /**
-     * Get all Pays
-     *
-     * @param
-     * @throws SQLException
+
+    /** Récupère tous les pays
+     * @return tous les pays
      */
     public ArrayList<Pays> get_Pays(){
 
@@ -675,11 +722,9 @@ public class BDD {
         return listPays;
     }
 
-    /**
-     * Get all Pays
-     *
-     * @param
-     * @throws SQLException
+
+    /** Récupère tous les status
+     * @return tous les status
      */
     public ArrayList<Statut> get_Statut(){
 
@@ -713,13 +758,10 @@ public class BDD {
         return listStatut;
     }
 
-    /**
-     * Display Categorie
-     *
-     * @param
-     * @throws SQLException
+    /** Récupère toutes les catégories de la base de donnée !!!Existe deja sous Get_AllCateogire (un truc comme ca)
+     * @return une liste des catégories de la base de donnée
      */
-    public ArrayList<Categorie> display_Categories(){
+    public ArrayList<Categorie> get_Categories(){
 
         ArrayList<Categorie> listCategorie = new ArrayList<>();
         Connection conn = null;
@@ -748,10 +790,10 @@ public class BDD {
         return listCategorie;
     }
 
-    /**
-     * Find categorie by his/her ID
-     *
-     * @param CategorieID
+
+    /** Cherche une catégorie en fonction de son ID
+     * @param CategorieID  ID de la catégorie cherchée
+     * @return la catégorie trouvée
      */
     public Categorie CategorieByID(int CategorieID) {
         Categorie categorie = null;
@@ -782,10 +824,9 @@ public class BDD {
         return categorie;
     }
 
-    /**
-     * Find categorie by his/her name
-     *
-     * @param nom
+    /** Cherche une catégorie en fonction de son nom
+     * @param nom   Nom de la catégorie cherchée
+     * @return la catégorie trouvée
      */
     public Categorie get_Categorie(String nom) {
         Categorie categorie = null;
@@ -820,11 +861,9 @@ public class BDD {
 
     }
 
-    /**
-     * Get Sous_categorie by
-     *
-     * @param
-     * @throws SQLException
+    /** Retourne la liste des sous catégorie d'une catégorie en fonction de son ID
+     * @param categorie_id      ID de la catégorie
+     * @return la liste des sous catégorie de la catégorie
      */
     public ArrayList<SousCategorie> get_Sous_categorie(int categorie_id) {
 
@@ -858,11 +897,10 @@ public class BDD {
         return listSousCategorie;
     }
 
-    /**
-     * Permet de verifier la validiter d'une nouvelle sous categorie
-     *
-     * @params email,pseudo
-     * @throws
+    /** Verifier la validiter d'une nouvelle sous catégorie
+     * @param nom           nom de la new sous catégorie
+     * @param categorie_id  ID de la new sous catégorie
+     * @return retourne true si la sous catégorie est valide
      */
     private boolean checkUniqueSousCategorie(String nom, int categorie_id){
 
@@ -877,45 +915,11 @@ public class BDD {
         return true;
     }
 
-    /**
-     * Permet d'insérer une nouvelle Sous_categorie à la BDD
-     *
-     * @params ...
-     * @throws
-     */
-    /*
-    public boolean insert_Sous_categorie(String nom, int categorie_id){
-        boolean ok = false;
 
-        try {
-
-            if ( !checkUniqueSousCategorie(nom, categorie_id ))
-                return ok;
-
-
-            String SQL = "INSERT INTO "
-                    + table("Sous_categorie")
-                    + "(nom, categorie_id) "
-                    + "VALUES "
-                    + "('" + nom +"'," + categorie_id + ");";
-
-            Statement st = getConnection().createStatement();
-            st.executeUpdate(SQL);
-            ok = true;
-
-        } catch (SQLException ex) {
-            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return ok;
-    }
-*/
-
-
-    /**
-     * Permet d'insérer une nouvelle Sous_categorie à la BDD
-     *
-     * @params ...
-     * @throws
+    /** Insérer une nouvelle Sous_categorie à la BDD
+     * @param sousCategorie Sous catégorie à insérer
+     * @param idUser        id du user qui insère la sous catégorie
+     * @return retourne true s'il n'y a pas eu de probleme, false autrement
      */
     public boolean insert_Sous_categorie(SousCategorie sousCategorie, int idUser){
         boolean ok = false;
@@ -956,10 +960,11 @@ public class BDD {
      * Renvoie l'ID d'une sous categorie suivant son nom
      *
      * @param sousCategorie nom de la sous categorie
-     * @return l'ID de la sous categorie
+     * @return retourne 0 s'il n'y a pas eu de probleme, -1 autrement
      */
     public int getSousCategorieID(String sousCategorie){
 
+        int status = 0;
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement pstmt = null;
@@ -976,23 +981,21 @@ public class BDD {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                return rs.getInt("sous_categorie_id");
+                status = rs.getInt("sous_categorie_id");
             }
         } catch (SQLException ex) {
             Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
-            return -1;
+            status = -1;
         } finally {
             try { rs.close(); } catch (Exception e) { /* ignored */ }
             try { pstmt.close(); } catch (Exception e) { /* ignored */ }
             try { conn.close(); } catch (Exception e) { /* ignored */ }
         }
-        return 0;
+        return status;
     }
-    /**
-     * Get Type de transaction in BD
-     *
-     * @param
-     * @throws SQLException
+
+    /** Récupère les types de transactions
+     * @return  les types de transactions
      */
     public ArrayList<String> get_Type_transaction() {
 
@@ -1022,6 +1025,11 @@ public class BDD {
         return listType_transaction;
     }
 
+    /**
+     * @param userID
+     * @param sousCatID
+     * @return
+     */
     public ArrayList<Integer> getSousCategorieMonthly(int userID, int sousCatID) {
         Connection conn = null;
         ResultSet rs = null;
@@ -1067,7 +1075,7 @@ public class BDD {
      * @param sousCategorie     sous categorie
      * @param recurrence        recurrence du payement
      * @param note              note de l'utilisateur concernant le payement
-     * @return                  retoure 0 s'il n'y a pas eu de probleme, -1 autrement
+     * @return                  retourne 0 s'il n'y a pas eu de probleme, -1 autrement
      */
     public int addIncome(int userID, int valeur, String sousCategorie, String recurrence, String note){
         String SQL = "INSERT INTO " + table("modele_transaction") + "(valeur, date, note, utilisateur_id, sous_categorie_id, type_transaction_id, recurrence_id) " +
@@ -1105,7 +1113,7 @@ public class BDD {
      * @param sousCategorie     sous categorie
      * @param recurrence        recurrence du payement
      * @param note              note de l'utilisateur concernant le payement
-     * @return                  retoure 0 s'il n'y a pas eu de probleme, -1 autrement
+     * @return                  retourne 0 s'il n'y a pas eu de probleme, -1 autrement
      */
     public int addExpense(int userID, int valeur, String sousCategorie, String recurrence, String note){
         String SQL = "INSERT INTO " + table("modele_transaction") + "(valeur, date, note, utilisateur_id, sous_categorie_id, type_transaction_id, recurrence_id) " +
@@ -1143,7 +1151,7 @@ public class BDD {
      * @param recurrenceId      id de la recurrence du payement
      * @param note              note de l'utilisateur concernant le payement
      * @param idTypeTrans       id de du type de transaction
-     * @return                  retoure 0 s'il n'y a pas eu de probleme, -1 autrement
+     * @return                  retourne 0 s'il n'y a pas eu de probleme, -1 autrement
      */
     public int addMovement(int userID, double valeur, int idSousCategorie, int recurrenceId, String note, int idTypeTrans){
         String SQL = "INSERT INTO " + table("modele_transaction") + "(valeur, date, note, utilisateur_id, sous_categorie_id, type_transaction_id, recurrence_id) " +
@@ -1181,6 +1189,12 @@ public class BDD {
         }
     }
 
+    /**
+     * @param userId
+     * @param cat
+     * @param idRecurence
+     * @return
+     */
     public double getSumExpensesOnSpecialPeriodCategorie(int userId,int cat,int idRecurence)
     {
         ArrayList<Transaction> temp = getAllTransactionByCatId(userId,cat);
@@ -1210,6 +1224,10 @@ public class BDD {
 
     }
 
+    /**
+     * @param idRecurrence
+     * @return
+     */
     private int translateRecurrenceInDays(int idRecurrence)
     {
         Connection conn = null;
@@ -1264,6 +1282,9 @@ public class BDD {
         return 0;
     }
 
+    /**
+     * @return
+     */
     public ArrayList<Categorie> getAllCategories() {
 
         ArrayList<Categorie> categories = new ArrayList<Categorie>();
@@ -1333,6 +1354,10 @@ public class BDD {
         return sommes;
     }
 
+    /**
+     * @param recurrence
+     * @return
+     */
     private int getRecIdByName(String recurrence)
     {
         String sql = "SELECT recurence_id FROM " + table("recurence") + " WHERE periodicite = ?;";
@@ -1362,6 +1387,10 @@ public class BDD {
         return result;
     }
 
+    /**
+     * @param userId
+     * @return
+     */
     public double getSoldeById(int userId)
     {
         Connection conn = null;
@@ -1464,6 +1493,10 @@ public class BDD {
 
     }
 
+    /**
+     * @param id_sous_cat
+     * @param id_user
+     */
     public void updateSousCatPerso(int id_sous_cat, int id_user){
         String SQL  = "CALL add_sous_cat_perso(?, ?)";
 
@@ -1482,11 +1515,10 @@ public class BDD {
         }
     }
 
-    /**
-     * Get Sous_categorie by
-     *
-     * @param
-     * @throws SQLException
+    /** Test si une sous catégoire appartient à un user
+     * @param sousCat_id    ID de la sous catégorie
+     * @param user_id
+     * @return true si elle est au user
      */
     public boolean belongToUser(int sousCat_id, int user_id) {
 
@@ -1516,6 +1548,10 @@ public class BDD {
     }
 
 
+    /** Récupère toutes les transactions d'un user
+     * @param userId
+     * @return toutes les transactions du user
+     */
     public ArrayList<Transaction> getAllTransaction(int userId)
     {
         Connection conn = null;
@@ -1557,6 +1593,11 @@ public class BDD {
     }
 
 
+    /** Récupère toutes les transaction d'un user et d'une catégorie donnée
+     * @param userId
+     * @param cat
+     * @return toutes les transaction trouvée
+     */
     public ArrayList<Transaction> getAllTransactionByCatId(int userId,int cat)
     {
         Connection conn = null;
@@ -1597,11 +1638,19 @@ public class BDD {
 
     }
 
+    /** Ajout une limite à un user dans la BDD
+     * @param amount
+     * @param userId
+     * @param recId
+     * @param sousCatId
+     * @param catId
+     * @return retourne le statut (-1 en cas d'echec)
+     */
     public int addLimit(double amount,int userId,int recId,int sousCatId,int catId)
     {
         Connection conn = null;
         PreparedStatement pstmt = null;
-        int status  = 0;
+        int status  = -1;
 
         String SQL = "INSERT INTO " + table("limite") + "(date, valeur, utilisateur_id, recurence_id,sous_categorie_id,categorie_id) " +
                 "VALUES ( NOW(),"+amount+", ?, ?, ?, ?);";
@@ -1640,7 +1689,7 @@ public class BDD {
         }
     }*/
 
-    /**
+    /** Tests quelques fonctions de la classe
      * @param args the command line arguments
      */
     public static void main(String[] args) throws SQLException {
@@ -1649,7 +1698,7 @@ public class BDD {
         System.out.println("------------------Utilisateurs------------------------------------------------");
         app.display_Utilisateurs();
         System.out.println("------------------Categorie------------------------------------------------");
-        app.display_Categories();
+        app.get_Categories();
         System.out.println("------------------Sous categorie------------------------------------------------");
         app.get_Sous_categorie(4);
         System.out.println("------------------Utilisateurs 1------------------------------------------------");
