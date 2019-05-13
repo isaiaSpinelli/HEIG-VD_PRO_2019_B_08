@@ -1286,7 +1286,6 @@ public class BDD {
      * @return
      */
     public ArrayList<Categorie> getAllCategories() {
-
         ArrayList<Categorie> categories = new ArrayList<Categorie>();
         Connection conn = null;
         Statement st = null;
@@ -1311,6 +1310,7 @@ public class BDD {
         }
         return categories;
     }
+    
 
     /**
      * Renvoie les 10 dernieres depenses toutes categories confondues
