@@ -1,5 +1,5 @@
 @*
- Permet d'afficher une liste de sous catégorie
+Permet d'afficher une liste de sous catégorie
 
 *@
 
@@ -7,51 +7,256 @@
 
 @(user : Utilisateur)
 
+<script type="text/javascript">
+
+        var catfromscalaincome = [@for(cat <- ((HomeController.DB).getAllCategories())){
+            {catid:'@(cat.id)', catname:'@(cat.nom)'},
+            }];
+
+        var souscatfromscalaincome = [@for(cat <- ((HomeController.DB).getAllCategories())){
+            {catname:'@(cat.nom)', subcat:[
+                    @for(subcat <- ((HomeController.DB).get_Sous_categorie(cat.id))){
+                    {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)'},
+                    }
+
+                ]},
+            }];
+
+        function displayCat(){
+            var catSel = document.getElementById("catSel-income");
+            var keys = Object.keys(catfromscalaincome);
+            for (var key in keys){
+                var opt = document.createElement("OPTION");
+                opt.setAttribute("value", catfromscalaincome[key].catid);
+                var text = document.createTextNode(catfromscalaincome[key].catname);
+                opt.appendChild(text);
+                catSel.appendChild(opt);
+            }
+        }
+
+        function deleteChild(parent_id) {
+            var parent = document.getElementById(parent_id);
+            var child = parent.lastElementChild;
+            while (child) {
+                parent.removeChild(child);
+                child = parent.lastElementChild;
+            }
+        }
+        function AppendChoose(){
+            var opt = document.createElement("OPTION");
+            opt.setAttribute("value", 0);
+            var text = document.createTextNode("Choose...");
+            opt.appendChild(text);
+            document.getElementById("subCatSel-income").appendChild(opt);
+        }
+
+        function displaySousCatSelIncome(){
+            deleteChild("subCatSel-income");
+            var sel = document.getElementById("catSel-income");
+            var selected_categorie_id = sel.options[sel.selectedIndex].value;
+
+            if (selected_categorie_id > 0 && selected_categorie_id != 9) {
+                document.getElementById("subcatId-income").style.display = "inline";
+                AppendChoose();
+                var selected_categorie = sel.options[sel.selectedIndex].text;
+                var subCatSel = document.getElementById("subCatSel-income");
+                var keys = Object.keys(souscatfromscalaincome);
+                for(var key in keys) {
+                    //selectionne les bonnes sous-categories
+                    if(souscatfromscalaincome[key].catname == selected_categorie){
+                        var rightsubcat = souscatfromscalaincome[key].subcat;
+                        var subkeys = Object.keys(rightsubcat);
+                        //iterration parmis les sous categories pour les afficher
+                        for(var subkey in subkeys) {
+                            var opt = document.createElement("OPTION");
+                            opt.setAttribute("value", rightsubcat[subkey].subcatid);
+                            var text = document.createTextNode(rightsubcat[subkey].subcatname);
+                            opt.appendChild(text);
+                            subCatSel.appendChild(opt);
+                        }
+                    }
+                }
+
+            } else {
+                document.getElementById("subcatId-income").style.display = "none";
+            }
+        }
+        function visualiseExpense(){
+            //text base
+            var textAmount = "Expense entered :";
+            var textFinalSolde = "New balance     :";
+
+            //recuperation Amount
+            var tmpAmount = Math.round(document.getElementById("amountId").value * 100) / 100;
+
+            //Calcul solde après mouvement
+            var finalSolde = Math.round((@user.getSolde() - tmpAmount) * 100) / 100;
+
+            //Création des affichages
+            textAmount = textAmount.concat(tmpAmount);
+            textFinalSolde = textFinalSolde.concat(finalSolde);
+
+            //affichage
+            document.getElementById("amountVisualize").innerHTML = textAmount;
+            document.getElementById("afterSolde").innerHTML = textFinalSolde;
+        }
+
+
+        function sendVisualize()
+        {
+            if(validateFormExpense())
+            {
+                closeNav();
+                document.forms["form-add-expense"].submit();
+            }
+        }
+</script>
+
+<script type = "text/javascript">
+        function displayRecurrenceIncome() {
+            if (document.getElementById('chk2').checked)
+            {
+                document.getElementById("recurrence-income").style.display = "inline";
+            } else
+            {
+                document.getElementById("recurrence-income").style.display = "none";
+            }
+        }
+</script>
+
+<script type = "text/javascript">
+        function displayIncomeRemboursement() {
+            if (document.getElementById('chk3').checked)
+            {
+                document.getElementById("income-remboursement").style.display = "inline";
+            } else
+            {
+                document.getElementById("income-remboursement").style.display = "none";
+            }
+        }
+</script>
+
+<script type = "text/javascript">
+        function validateFormExpense() {
+            var x = document.forms["form-add-expense"]["amount"].value;
+            if(x == "0") {
+                alert("Insert a valid amount");
+                return false;
+            }
+
+            x = document.forms["form-add-expense"]["categorie"].value;
+            if (x == "0" || x == 0) {
+                alert("Choose a categorie");
+                return false;
+            }
+            x = document.forms["form-add-expense"]["categorie"].value;
+            if(x != 17 && x != 9){
+                if(document.forms["form-add-expense"]["sous-categorie"].value == "0" ){
+                    alert("Choose a subcategorie");
+                    return false;
+                }
+            }
+            return true;
+        }
+</script>
+
 
 <div class="card-header" id="headingTwo">
     <h5 class="mb-0">
-        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
             Add income
         </button>
     </h5>
 </div>
-<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+
+<div id="collapseTwo" class="collapse " aria-labelledby="headingTwo" data-parent="#accordion">
     <div class="card-body sidebar-menu-text">
+
+    @helper.form(action = helper.CSRF(routes.HomeController.AddExpense()),'name -> "form-add-expense" ,'onsubmit -> "return validateFormExpense();") {
+
         <form>
             <div class="form-group">
                 <label>Amount</label>
-                <input type="text" name="amount" class="form-control" placeholder="">
-            </div> <!-- form-group end.// -->
-            <div class="form-group">
-                <label>Categorie</label>
-                <select  id="catSel-income" name="categorie" class="form-control" onchange="displaySousCatSelIncome();">
-
-                    @for(cat <- (HomeController.DB).getAllCategories()) {
-                        <option value="@cat.id">@cat.nom</option>
-                    }
-                </select>
+                <input type="number" name="amount" id="amountId" step=0.05 value="0" min="0" max="100000000" class="form-control"  placeholder="">
             </div> <!-- form-group end.// -->
 
-            <div id="subCat-income" class="hidden-categorie">
+            <div>
+                <input id="chk3" type="checkbox" data-toggle="toggle" onclick="displayIncomeRemboursement()">
+                <label for="check3">Remboursement</label>
+            </div>
+
+            <div id="income-remboursement" class="hidden-categorie">
                 <div class="form-group">
-                    <label>Subcategorie</label>
-                    <select name="sous-categorie" class="form-control">
-                    @for(sousCat <- (HomeController.DB).get_Sous_categorie(1)){
-                        <option value ="@sousCat.id">@sousCat.nom</option>
-                    }
+                    <label>Categorie</label>
+                    <select  id="catSel-income" name="categorie" class="form-control" onchange="displaySousCatSelIncome();">
+                        <option value="0" selected>Choose...</option>
+                        <script type = "text/javascript">displayCat()</script>
                     </select>
                 </div> <!-- form-group end.// -->
+
+
+                <div id="subcatId-income" class="hidden-categorie">
+                    <div class="form-group">
+                        <label>Subcategorie</label>
+                        <select id="subCatSel-income" name="sous-categorie" class="form-control">
+                            <option value="0" selected>Choose...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span  class="input-group-text" style="background:  #8c8c8c" style="padding-right: 20px">Note</span>
+                    </div>
+                    <textarea name="note" class="form-control" aria-label="With textarea"></textarea>
+                </div>
             </div>
-            <input id="chk1-income" type="checkbox" data-toggle="toggle" onclick="displayRecurrenceIncome()">
-            <label for="check1">Recurrence</label>
+
+
+
+            <input id="chk2" type="checkbox" data-toggle="toggle" onclick="displayRecurrenceIncome()">
+            <label for="check2">Recurrence</label>
             <div id="recurrence-income" class="hidden-categorie">
                 <div class="form-group">
                     <select name="recurrence" class="form-control">
-                        <option value ="">choose...</option>
+                        <option value ="0">choose...</option>
+                        @for(rec <- (HomeController.DB).getRecurrence()){
+                            <option value="@rec.getId()">@rec.getName()</option>
+                        }
                     </select>
                 </div> <!-- form-group end.// -->
             </div>
-            <button type="submit" class="btn btn-primary btn-block"> Add </button>
+            <button type="submit" class="btn btn-primary btn-block">Add</button>
+            <button type="button" data-toggle="modal" onclick="visualiseExpense();" class="btn btn-secondary btn-block" data-target="#visualization"> Visualize </button>
+
+                <!-- Modal -->
+            <div class="modal fade" id="visualization" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Visualisation</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="" method="get">
+                            <div class="modal-body">
+                                <div><a>Base balance    : @user.getSolde()</a></div>
+                                <div><a id="amountVisualize"></a></div>
+                                <br>
+                                <div><a id="afterSolde"></a></div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" onclick="sendVisualize();" class="btn btn-primary">Confirm changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </form>
+    }
     </div>
 </div>
