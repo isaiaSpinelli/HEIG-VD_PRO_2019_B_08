@@ -21,7 +21,7 @@
                                     '@(cat.getName())',}
                                 }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                             datasets: [{
-                                data: [@for(cat <- ((HomeController.DB).getAllCategoriesNotEmpty())){
+                                data: [@for(cat <- ((HomeController.DB).getAllCategories())){
                                         @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie(user.getId(),cat.id,idRecurrence)),
                                     }],
                                 //[12, 19, 3, 5, 2, 3],

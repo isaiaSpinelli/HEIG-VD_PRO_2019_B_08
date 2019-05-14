@@ -12,13 +12,26 @@ import java.awt.*;
  */
 public class Statut {
 
+    /**
+     * nom du statut
+     */
     public String nom;
+    /**
+     * id du statut
+     */
     public int id;
 
+    /**
+     * Constructeur par défaut
+     */
     Statut() {
 
     }
 
+    /** Constructeur
+     * @param id    : id du statut
+     * @param nom   : nom du statut
+     */
     public Statut(int id, String nom){
         this.id = id;
         this.nom = nom;

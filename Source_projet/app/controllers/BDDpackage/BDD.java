@@ -1282,6 +1282,7 @@ public class BDD {
         return 0;
     }
 
+
     /**
      * @return
      */

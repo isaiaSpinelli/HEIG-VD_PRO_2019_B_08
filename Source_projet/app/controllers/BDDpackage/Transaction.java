@@ -9,22 +9,49 @@ package controllers.BDDpackage;
  */
 public class Transaction {
 
+    /**
+     * ID de la transaction
+     */
     public int id;
+    /**
+     * nom de la transaction
+     */
     public String name;
+    /**
+     * valeur de la transaction
+     */
     public double valeur;
+    /**
+     * date de la transaction
+     */
     public String date;
+    /**
+     * Recurrence de la transaction
+     */
     public int idRecurrence;
-
+    /**
+     * timestamp_solde de la transaction
+     */
     public double timestamp_solde;
-
+    /**
+     * type de la transaction
+     */
     public int typeTransaction ;
 
 
     Transaction() {
 
     }
-    // tout
 
+    /** Constructeur complet
+     * @param id
+     * @param name
+     * @param valeur
+     * @param date
+     * @param idRecurence
+     * @param timestamp_solde
+     * @param typeTransaction
+     */
     public Transaction(int id, String name, double valeur, String date, int idRecurence, double timestamp_solde, int typeTransaction){
 
         this.id = id;

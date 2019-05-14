@@ -12,13 +12,23 @@ import java.awt.*;
  */
 public class Pays {
 
+    /**
+     * nom du pays
+     */
     public String nom;
+    /**
+     * ID du pays
+     */
     public int id;
 
     Pays() {
 
     }
 
+    /** Constructeur
+     * @param id    : ID du pays
+     * @param nom   : nom du pays
+     */
     public Pays(int id, String nom){
         this.id = id;
         this.nom = nom;
