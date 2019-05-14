@@ -7,9 +7,11 @@
 package controllers.BDDpackage;
 
 
-/*
- *
- * @author spine
+/**
+ * Classe permettant de modéliser une sous catégorie de la base de donnée
+ * @author Compact budget
+ * @version 1.0
+ * @since 1.0
  */
 public class SousCategorie {
 

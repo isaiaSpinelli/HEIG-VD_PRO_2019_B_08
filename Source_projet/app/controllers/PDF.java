@@ -44,31 +44,49 @@ import java.util.Date;
  */
 public class PDF {
 
+    /**
+     * Utilisateur concerné par le PDF
+     */
     Utilisateur user ;
 
+    /**
+     * Style pour l'écriture du titre
+     */
     private static Font Title = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
+    /**
+     * Style pour l'écriture du titre 2
+     */
     private static Font Title2 = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+    /**
+     * Style pour l'écriture des infos
+     */
     private static Font info = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.BOLD);
 
 
+    /** Constructeur
+     * @param user : Utilisateur concerné par le PDF
+     */
     PDF(Utilisateur user){
         this.user = user;
     }
 
+    /** Crée le PDF des historiques de l'utilisateur
+     * @return true si le PDF a bien était crée
+     */
     public boolean cree(){
 
         boolean statut = false;
         Document document = new Document();
 
         try
-        {
+        {   // Crée le pdf
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Historique.pdf"));
             document.open();
-
+            // Ajoutes le contenu
             addMetaData(document);
             addTitlePage(document);
             createTable(document);
-
+            // Ferme les ressources
             document.close();
             writer.close();
 
@@ -81,10 +99,12 @@ public class PDF {
             e.printStackTrace();
         }
 
-
         return statut;
     }
 
+    /** Ajoute les Meta data du document PDF
+     * @param document  : Document dans le quel ajouter les meta datas
+     */
     private static void addMetaData(Document document) {
         document.addTitle("Historique de vos dépenses");
         document.addSubject("Historique");
@@ -93,6 +113,10 @@ public class PDF {
         document.addCreator("Compact Budget");
     }
 
+    /** Ajout le titre et la préface au document
+     * @param document  : Document dans le quel ajouter le titre et la préface
+     * @throws DocumentException
+     */
     private void addTitlePage(Document document)
             throws DocumentException {
         Paragraph preface = new Paragraph();
@@ -116,6 +140,10 @@ public class PDF {
         document.add(preface);
     }
 
+    /** Ajoute un nombre de ligne donnée vide à un paragraphe
+     * @param paragraph : paragraphe au quel ajouter les lignes vides
+     * @param number    : nombre de ligne vide à ajouter
+     */
     private void addEmptyLine(Paragraph paragraph, int number) {
         for (int i = 0; i < number; i++) {
             paragraph.add(new Paragraph(" "));
@@ -123,6 +151,9 @@ public class PDF {
     }
 
 
+    /** Ajoute la table des historiques de l'utilisateur
+     * @param document  : Document au quel ajouter la table
+     */
     private void createTable(Document document) {
         try {
             PdfPTable table = new PdfPTable(4);
@@ -160,6 +191,7 @@ public class PDF {
             cellContente.setHorizontalAlignment(Element.ALIGN_MIDDLE);
             cellContente.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
+            // Pour toutes les transactions de l'utilisateur
             for ( Transaction transaction : (HomeController.DB).getAllTransaction(user.id) ){
                 cellContente.setPhrase(new Phrase(transaction.name));
                 table.addCell(cellContente);
