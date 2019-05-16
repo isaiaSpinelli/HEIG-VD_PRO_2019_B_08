@@ -90,7 +90,7 @@
             var tmpAmount = Math.round(document.getElementById("amountId").value * 100) / 100;
 
             //Calcul solde après mouvement
-            var finalSolde = Math.round((@user.getSolde() - tmpAmount) * 100) / 100;
+            var finalSolde = Math.round(((@HomeController.getUserSession()).getSolde() - tmpAmount) * 100) / 100;
 
             //Création des affichages
             textAmount = textAmount.concat(tmpAmount);
@@ -221,7 +221,7 @@
                             </div>
                             <form action="" method="get">
                                 <div class="modal-body">
-                                    <div><a>Base balance    : @user.getSolde()</a></div>
+                                    <div><a>Base balance    : @(HomeController.getUserSession()).getSolde()</a></div>
                                     <div><a id="amountVisualize"></a></div>
                                     <br>
                                     <div><a id="afterSolde"></a></div>

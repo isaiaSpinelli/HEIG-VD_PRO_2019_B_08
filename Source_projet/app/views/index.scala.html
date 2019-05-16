@@ -16,7 +16,7 @@
           </div>
           <br>
           <div>
-              Actual balance : @if(user.getId() != 0){
+              Actual balance : @if(HomeController.getIdSession() != 0){
                 @((HomeController.DB).getSoldeById(user.getId())) .-
               } else{
                 You need to <a href="/profil">connect</a>

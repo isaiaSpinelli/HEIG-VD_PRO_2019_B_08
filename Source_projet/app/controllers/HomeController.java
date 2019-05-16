@@ -36,7 +36,6 @@ public class HomeController extends Controller {
 
     private final Configuration configuration;
 
-    public Utilisateur user = new Utilisateur();
 
     private final FormFactory formFactory;
     private String errorMessageLogin = "";
@@ -63,12 +62,12 @@ public class HomeController extends Controller {
     // Page d'accueil
     public Result index()  throws SQLException {
 
-        return ok(views.html.index.render("Compact Budget",user));
+        return ok(views.html.index.render("Compact Budget",this.getUserSession()));
     }
 
     // Page d'accueil
     public Result Statistics()  throws SQLException {
-        return ok(views.html.Statistics.render("stats", user,1));
+        return ok(views.html.Statistics.render("stats", this.getUserSession(),1));
     }
 
     // Gestion du login
@@ -77,11 +76,33 @@ public class HomeController extends Controller {
         DynamicForm form = formFactory.form().bindFromRequest();
         int valCo = DB.checkConnectionGetId(form.get("password"),form.get("username"));
         if(valCo != 0) {
-            user = DB.UtilisateurByID(valCo);
+            Utilisateur user = DB.UtilisateurByID(valCo);
+            session("userName", user.nom);
+            session("userID", Integer.toString(user.id));
+
         }
         errorMessageLogin = "Erreur, veuillez réessayer.";
         return redirect("/profil");
 
+    }
+
+    public static int getIdSession(){
+
+        int id = 0;
+        String idS = "";
+        if (session("userID") == null){
+
+        } else {
+            idS = session("userID");
+            // System.out.println(("id is: " + idS));
+            id = Integer.parseInt(idS);
+    }
+
+        return id;
+    }
+
+    public static Utilisateur getUserSession(){
+        return DB.UtilisateurByID(getIdSession());
     }
 
     //Gestion nouvel utilisateur
@@ -174,15 +195,15 @@ public class HomeController extends Controller {
         ArrayList<Statut> statut = new ArrayList<Statut>();
         statut = DB.get_Statut();
         if(idResult != 0) {
-            user = DB.UtilisateurByID(idResult);
-            return ok( views.html.utilisateur.render( user,0,"") );
+            //?? user = DB.UtilisateurByID(idResult);
+            return ok( views.html.utilisateur.render( this.getUserSession(),0,"") );
         }
         else if(!error)
         {
             messageError.add("Erreur, veuillez choisir un autre username ou un autre email\n");
         }
 
-        return ok(views.html.register.render(pays,statut,messageError,user));
+        return ok(views.html.register.render(pays,statut,messageError,this.getUserSession()));
 
     }
 
@@ -197,27 +218,28 @@ public class HomeController extends Controller {
         ArrayList<Statut> statut = new ArrayList<Statut>();
         statut = DB.get_Statut();
 
-        return ok(views.html.register.render(pays,statut,null,user));
+        return ok(views.html.register.render(pays,statut,null,this.getUserSession()));
     }
 
     // Exemple pour passer un paramètre de java -> HTML
     public Result Profil() {
         // Get user_id
-        if(user.getId() == 0)
+        if(this.getIdSession() == 0)
         {
-            return ok( views.html.Login.render(errorMessageLogin,user));
+            return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
         }
         else
         {
 
-            return ok( views.html.utilisateur.render( user,0,"") );
+            return ok( views.html.utilisateur.render( this.getUserSession(),0,"") );
         }
 
     }
 
     //Gestion de la déconnection
     public Result Disconnect(){
-        user = new Utilisateur();
+        //user = new Utilisateur();
+        session().clear();
         errorMessageLogin = "";
         return redirect("/profil");
 
@@ -227,16 +249,16 @@ public class HomeController extends Controller {
     public Result Categorie() {
 
         // Si il n'est pas loggé
-        if(user.getId() == 0)
+        if( this.getIdSession() == 0)
         {   // Affiche la page de logine
-            return ok( views.html.Login.render(errorMessageLogin,user));
+            return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
         }
         else {
             // Sinon, affiche les catégorie
             ArrayList<Categorie> listCategorie = new ArrayList<Categorie>();
             listCategorie = DB.get_Categories();
 
-            return ok(views.html.Categorie.render(listCategorie, user));
+            return ok(views.html.Categorie.render(listCategorie, this.getUserSession()));
         }
     }
 
@@ -246,7 +268,7 @@ public class HomeController extends Controller {
        ArrayList<Categorie> listCategorie = new ArrayList<Categorie>();
        listCategorie = DB.get_Categories();
 
-        return ok( views.html.sousCategorie.render( listCategorie, defaultSelect,user) );
+        return ok( views.html.sousCategorie.render( listCategorie, defaultSelect,this.getUserSession()) );
     }
 
     // Permet d'ajouter une sous catégorie
@@ -284,36 +306,36 @@ public class HomeController extends Controller {
         }
 
         // Retour a la page souhaitée (profil)
-        return ok( views.html.utilisateur.render( DB.UtilisateurByID( user.getId() ),alerte,message) );
+        return ok( views.html.utilisateur.render( DB.UtilisateurByID( this.getIdSession() ),alerte,message) );
     }
 
     // Gestion des options
     public Result ModifOptions()
     {
-        if(user.getId() == 0)
+        if(this.getIdSession() == 0)
         {
             return redirect("/profil");
         }
         else
         {
-            return ok(views.html.options.render(user.getOptions(),user));
+            return ok(views.html.options.render(this.getUserSession().getOptions(),this.getUserSession()));
         }
     }
 
     public Result ModifOptionsSub(String Option)
     {
         //return ok(views.html.index.render(Option));
-        if(user.getId() == 0)
+        if(this.getIdSession() == 0)
         {
-            return ok(views.html.index.render("Compact Budget",user));
+            return ok(views.html.index.render("Compact Budget",this.getUserSession()));
         }
         else
         {
-            boolean ret = DB.updateOptionUser(user.getId(), Integer.parseInt(Option));
+            boolean ret = DB.updateOptionUser(this.getIdSession(), Integer.parseInt(Option));
             if(ret)
             {
-                int valco = user.getId();
-                user = DB.UtilisateurByID(valco);
+                int valco = this.getIdSession();
+                // ?? user = DB.UtilisateurByID(valco);
                 return redirect("/profil");
             }
             else
@@ -324,8 +346,8 @@ public class HomeController extends Controller {
     }
 
     public Result ModifProfile() {
-        if (user.getId() == 0) {
-            return ok(views.html.index.render("Compact Budget",user));
+        if (this.getIdSession() == 0) {
+            return ok(views.html.index.render("Compact Budget",this.getUserSession()));
         } else {
             DynamicForm form = formFactory.form().bindFromRequest();
 
@@ -341,23 +363,23 @@ public class HomeController extends Controller {
             if(!error)
             {
                 Boolean genreVal = Integer.parseInt(form.get("genre")) == 1 ? true : false;
-                boolean ret = DB.updateUser(user.getId(),form.get("surname"),form.get("name"),form.get("email"),form.get("username")
+                boolean ret = DB.updateUser(this.getIdSession(),form.get("surname"),form.get("name"),form.get("email"),form.get("username")
                         , genreVal,form.get("anniversaire")
                         , Integer.parseInt(form.get("statut"))
                         , Integer.parseInt(form.get("pays")));
                 if(ret)
                 {
-                    user = DB.UtilisateurByID(user.getId());
+                    // ?? user = DB.UtilisateurByID(this.getIdSession());
                     return redirect("/profil");
                 }
                 else
                 {
 
-                    return ok( views.html.utilisateur.render( user,1,erreurMes));
+                    return ok( views.html.utilisateur.render( this.getUserSession(),1,erreurMes));
                 }
             }
 
-            return ok( views.html.utilisateur.render( user,1,erreurMes));
+            return ok( views.html.utilisateur.render( this.getUserSession(),1,erreurMes));
         }
     }
 
@@ -387,32 +409,32 @@ public class HomeController extends Controller {
         //return ok(views.html.index.render(Integer.toString(amount),user));
         //return ok(views.html.index.render(Double.toString(amount),user));
 
-        int userId = user.getId();
+        int userId = this.getIdSession();
         int recId = Integer.parseInt(form.get("recurrence"));
         String note = form.get("note");
 
         int result = DB.addMovement(userId,amount,idSubCat,recId,note,id_trans);
-        user = DB.UtilisateurByID(userId);
+        // ?? user = DB.UtilisateurByID(userId);
         return redirect("/");
 
     }
 
     public Result Historique()
     {
-        if(user.getId() == 0)
+        if(this.getIdSession() == 0)
         {
             return redirect("/profil");
         }
-        return ok(views.html.historique.render("Historique",user,1));
+        return ok(views.html.historique.render("Historique",this.getUserSession(),1));
     }
 
     public Result historiqueCat(int cat)
     {
-        if(user.getId() == 0)
+        if(this.getIdSession() == 0)
         {
             return redirect("/profil");
         }
-        return ok(views.html.historique.render("Historique",user,cat));
+        return ok(views.html.historique.render("Historique",this.getUserSession(),cat));
     }
 
     /* Permet de créer le PDF de l'historique d'un utilisateur*/
@@ -422,7 +444,7 @@ public class HomeController extends Controller {
         // Récupère les informations depuis une requete POST
         int idUser = Integer.parseInt(form.get("idUser"));
         // S'il n'est pas connecté
-        if (idUser == 0 || user.getId() == 0)
+        if (idUser == 0 || this.getIdSession() == 0)
         {
             return redirect("/");
         }
@@ -454,7 +476,7 @@ public class HomeController extends Controller {
         {
             return redirect("/");
         }
-        int userId = user.getId();
+        int userId = this.getIdSession();
         int recId = Integer.parseInt(form.get("recurrence"));
         int catId = Integer.parseInt(form.get("categorie"));
 
