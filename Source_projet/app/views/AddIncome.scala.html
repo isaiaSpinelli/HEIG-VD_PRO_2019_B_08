@@ -21,7 +21,9 @@ Permet d'afficher une liste de sous catégorie
 
                 ]},
             }];
+</script>
 
+<script type = "text/javascript">
         function displayCat(){
             var catSel = document.getElementById("catSel-income");
             var keys = Object.keys(catfromscalaincome);
@@ -33,7 +35,9 @@ Permet d'afficher une liste de sous catégorie
                 catSel.appendChild(opt);
             }
         }
+</script>
 
+<script type = "text/javascript">
         function deleteChild(parent_id) {
             var parent = document.getElementById(parent_id);
             var child = parent.lastElementChild;
@@ -49,7 +53,9 @@ Permet d'afficher une liste de sous catégorie
             opt.appendChild(text);
             document.getElementById("subCatSel-income").appendChild(opt);
         }
+</script>
 
+<script type = "text/javascript">
         function displaySousCatSelIncome(){
             deleteChild("subCatSel-income");
             var sel = document.getElementById("catSel-income");
@@ -81,6 +87,9 @@ Permet d'afficher une liste de sous catégorie
                 document.getElementById("subcatId-income").style.display = "none";
             }
         }
+</script>
+
+<script type = "text/javascript">
         function visualiseExpense(){
             //text base
             var textAmount = "Expense entered :";
@@ -100,8 +109,9 @@ Permet d'afficher une liste de sous catégorie
             document.getElementById("amountVisualize").innerHTML = textAmount;
             document.getElementById("afterSolde").innerHTML = textFinalSolde;
         }
+</script>
 
-
+<script type = "text/javascript">
         function sendVisualize()
         {
             if(validateFormExpense())

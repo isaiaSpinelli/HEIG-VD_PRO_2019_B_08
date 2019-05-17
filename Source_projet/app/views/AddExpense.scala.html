@@ -21,8 +21,11 @@
 
      ]},
             }];
+</script>
 
-        function displayCat(){
+<script type="text/javascript">
+
+        function displayCatExpense(){
             var catSel = document.getElementById("catSel");
             var keys = Object.keys(catfromscala);
             for (var key in keys){
@@ -33,7 +36,9 @@
                 catSel.appendChild(opt);
             }
         }
+</script>
 
+<script type="text/javascript">
         function deleteChild(parent_id) {
             var parent = document.getElementById(parent_id);
             var child = parent.lastElementChild;
@@ -42,6 +47,9 @@
                 child = parent.lastElementChild;
             }
         }
+</script>
+
+<script type = "text/javascript">
         function AppendChoose(){
             var opt = document.createElement("OPTION");
             opt.setAttribute("value", 0);
@@ -49,7 +57,9 @@
             opt.appendChild(text);
             document.getElementById("subCatSel").appendChild(opt);
         }
+</script>
 
+<script type = "text/javascript">
         function displaySousCatSel(){
             deleteChild("subCatSel");
             var sel = document.getElementById("catSel");
@@ -81,6 +91,9 @@
                 document.getElementById("subcatId").style.display = "none";
             }
         }
+</script>
+
+<script type = "text/javascript">
         function visualiseExpense(){
             //text base
             var textAmount = "Expense entered :";
@@ -171,7 +184,7 @@
                     <label>Categorie</label>
                     <select  id="catSel" name="categorie" class="form-control" onchange="displaySousCatSel();">
                         <option value="0" selected>Choose...</option>
-                        <script type = "text/javascript">displayCat()</script>
+                        <script type = "text/javascript">displayCatExpense()</script>
                     </select>
                 </div> <!-- form-group end.// -->
 
