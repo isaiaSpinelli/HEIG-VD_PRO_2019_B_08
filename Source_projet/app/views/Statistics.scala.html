@@ -17,12 +17,12 @@
                         type: 'pie',
                         data: {
                             labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie(user.getId(),cat.id,idRecurrence)) != 0){
+                                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
                                     '@(cat.getName())',}
                                 }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                             datasets: [{
                                 data: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie(user.getId(),cat.id,idRecurrence)),
+                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
                                     }],
                                 //[12, 19, 3, 5, 2, 3],
                                 backgroundColor: [
