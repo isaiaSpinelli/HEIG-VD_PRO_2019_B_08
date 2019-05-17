@@ -10,12 +10,6 @@
       <div class="col-md border shadow-lg p-4 mb-4 home-row">
         <div class="div-centered-panel">
           <div>
-            <H4>
-              Some informations
-            </H4>
-          </div>
-          <br>
-          <div>
               Actual balance : @if(HomeController.getIdSession() != 0){
                 @((HomeController.DB).getSoldeById(user.getId())) .-
               } else{
@@ -24,16 +18,42 @@
           </div>
         </div>
       </div>
-      <div class="col-md border shadow-lg p-4 mb-4 home-row">
-        <div class="div-centered-panel">
-          Some statistics
-        </div>
-      </div>
+
       <div class="col-md border shadow-lg p-4 mb-4 home-row">
         <div class="div-centered-panel">
           News
+
+            <div class="container">
+              <div><a>Update upcoming : get your coach!</a></div>
+              <div id="news1" class="collapse">
+                <div class="sentenceA">
+                <p>Check the upcoming update <a href="#" >clicking here</a>... Get your own coach, he will check the way you manage your money and will give you advice on how you can be more efficient. He can compare your expenses with other anonym users and tell you more about your profile. Do not hesitate to try this new feature.</p>
+                </div>
+              </div>
+              <button type="button" class="btn btn-info btn-sm" data-toggle="collapse" data-target="#news1">Read more...</button>
+              <br><br>
+
+              <div><a>Participate to our contest</a></div>
+              <div id="news2" class="collapse sentenceA">
+                <p>Participate to our contest to get 12 months of premium account ! You only need to subscribe to our Facebook and comment the goal you want to achieve during this year ! 1500 people will be sorted to get the free premium period</p>
+              </div>
+              <button type="button" class="btn btn-info btn-sm" data-toggle="collapse" data-target="#news2">Read more...</button>
+              <br><br>
+
+              <div><a>Find us everywhere on social medias !</a></div>
+              <div id="news3" class="collapse sentenceA">
+                <p>You can follow us on Twitter and Facebook to be aware of the ideas we have to improve the application. You can also provide a feedback of your experience and give us ideas about the features you would like to see someday on Compact Budget.</p>
+              </div>
+              <button type="button" class="btn btn-info btn-sm" data-toggle="collapse" data-target="#news3">Read more...</button>
+            </div>
+            </div>
+
+
         </div>
       </div>
     </div>
   </div>
+
 }
+
+
