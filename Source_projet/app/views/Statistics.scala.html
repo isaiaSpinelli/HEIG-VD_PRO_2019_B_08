@@ -5,50 +5,213 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script>
 
-@main(titre: String)(user) {
+<script type="text/javascript">
+        var catfromscala = [@for(cat <- ((HomeController.DB).getAllCategories())){
+            {catid:'@(cat.id)', catname:'@(cat.nom)'},
+            }];
 
-    <h3>Dépenses des catégories</h3>
+        var souscatfromscala = [@for(cat <- ((HomeController.DB).getAllCategories())){
+            {catname:'@(cat.nom)', subcat:[
+                    @for(subcat <- ((HomeController.DB).get_Sous_categorie(cat.id))){
+                    {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)'},
+                    }
+                ]},
+            }];
+</script>
+
+<script type="text/javascript">
+    function displayExpenseByCat(){
+
+        var ctx = document.getElementById('myChart2').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
+                    '@(cat.getName())',}
+                    }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    data: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
+                        }],
+                    //[12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+
+        // chart colors
+        var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
+
+        /* large line chart */
+        var chLine = document.getElementById("chLine2");
+        var chartData = {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+            datasets: [{
+                data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
+                backgroundColor: 'transparent',
+                borderColor: colors[0],
+                borderWidth: 4,
+                pointBackgroundColor: colors[0]
+
+            }]
+        };
+
+        if (chLine) {
+            new Chart(chLine, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: false
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+<script type="text/javascript">
+        function displayCatStats(){
+            var catSel = document.getElementById("catSelStats");
+            var keys = Object.keys(catfromscala);
+            for (var key in keys){
+                var opt = document.createElement("OPTION");
+                opt.setAttribute("value", catfromscala[key].catid);
+                var text = document.createTextNode(catfromscala[key].catname);
+                opt.appendChild(text);
+                catSel.appendChild(opt);
+            }
+        }
+</script>
+
+@main(titre: String)(user) {
     <div class="container">
         <div class="row">
-            <canvas id="myChart"></canvas>
-            <script>
-                    var ctx = document.getElementById('myChart').getContext('2d');
-                    var myChart = new Chart(ctx, {
-                        type: 'pie',
-                        data: {
-                            labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
+            <div class="col-md border shadow-lg p-4 mb-4 home-row">
+                <h5>Overall expenses</h5>
+                <canvas id="myChart"></canvas>
+                <script>
+                        var ctx = document.getElementById('myChart').getContext('2d');
+                        var myChart = new Chart(ctx, {
+                            type: 'pie',
+                            data: {
+                                labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
                                     @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
                                     '@(cat.getName())',}
-                                }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                            datasets: [{
-                                data: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                                    }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                datasets: [{
+                                    data: [@for(cat <- ((HomeController.DB).getAllCategories())){
                                         @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
-                                    }],
-                                //[12, 19, 3, 5, 2, 3],
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1
+                                        }],
+                                    //[12, 19, 3, 5, 2, 3],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true
+                            }
+                        });
+                </script>
+                <br><br>
+                <h5>Overall Expenses last 12 months</h5>
+                <canvas id="chLine" height="100"></canvas>
+                <script>
+                        // chart colors
+                        var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
+
+                        /* large line chart */
+                        var chLine = document.getElementById("chLine");
+                        var chartData = {
+                            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+                            datasets: [{
+                                data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
+                                backgroundColor: 'transparent',
+                                borderColor: colors[0],
+                                borderWidth: 4,
+                                pointBackgroundColor: colors[0]
+
                             }]
-                        },
-                        options: {
-                            responsive: true
+                        };
+
+                        if (chLine) {
+                            new Chart(chLine, {
+                                type: 'line',
+                                data: chartData,
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: false
+                                            }
+                                        }]
+                                    },
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            });
                         }
-                    });
-            </script>
+                </script>
+            </div>
+
+            <div class="col-md border shadow-lg p-4 mb-4 home-row">
+                <h5>Expenses by categorie</h5>
+                <select  id="catSelStats" name="categorie" class="form-control" onchange="displayExpenseByCat();">
+                    <option value="0" selected>Choose...</option>
+                    <script type = "text/javascript">displayCatStats()</script>
+                </select>
+                <canvas id="myChart2"></canvas>
+                <br><br>
+                <canvas id="chLine2" height="100"></canvas>
+
+
+            </div>
         </div>
     </div>
+
+
 }
