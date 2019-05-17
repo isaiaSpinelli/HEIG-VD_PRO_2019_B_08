@@ -502,6 +502,13 @@ Extra (xl) large devices (large desktops, 1200px and up)
 
 @import url('https://fonts.googleapis.com/css?family=Numans');
 
+.sentenceA p {
+  color: #b6b7ba;
+  text-: 30%;
+  font-size: 13px;
+  text-align: justify;
+}
+
 html,body{
   background-size: cover;
   background-repeat: no-repeat;
