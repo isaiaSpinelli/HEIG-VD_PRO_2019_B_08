@@ -22,6 +22,79 @@
 <script type="text/javascript">
     function displayExpenseByCat(){
 
+        var ctx = document.getElementById('myChart2').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
+                    '@(cat.getName())',}
+                    }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                datasets: [{
+                    data: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
+                        }],
+                    //[12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+
+        // chart colors
+        var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
+
+        /* large line chart */
+        var chLine = document.getElementById("chLine2");
+        var chartData = {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+            datasets: [{
+                data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
+                backgroundColor: 'transparent',
+                borderColor: colors[0],
+                borderWidth: 4,
+                pointBackgroundColor: colors[0]
+
+            }]
+        };
+
+        if (chLine) {
+            new Chart(chLine, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: false
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            });
+        }
     }
 </script>
 
@@ -51,12 +124,12 @@
                             type: 'pie',
                             data: {
                                 labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie(user.getId(),cat.id,idRecurrence)) != 0){
+                                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
                                     '@(cat.getName())',}
                                     }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                                 datasets: [{
                                     data: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie(user.getId(),cat.id,idRecurrence)),
+                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
                                         }],
                                     //[12, 19, 3, 5, 2, 3],
                                     backgroundColor: [
@@ -100,6 +173,7 @@
                                 borderColor: colors[0],
                                 borderWidth: 4,
                                 pointBackgroundColor: colors[0]
+
                             }]
                         };
 
@@ -130,6 +204,10 @@
                     <option value="0" selected>Choose...</option>
                     <script type = "text/javascript">displayCatStats()</script>
                 </select>
+                <canvas id="myChart2"></canvas>
+                <br><br>
+                <canvas id="chLine2" height="100"></canvas>
+
 
             </div>
         </div>
