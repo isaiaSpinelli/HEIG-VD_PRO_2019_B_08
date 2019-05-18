@@ -98,10 +98,10 @@ Permet d'afficher une liste de sous catégorie
             var textFinalSolde = "New balance     :";
 
             //recuperation Amount
-            var tmpAmount = Math.round(document.getElementById("amountId").value * 100) / 100;
+            var tmpAmount = Math.round(document.getElementById("amountIdIncome").value * 100) / 100;
 
             //Calcul solde après mouvement
-            var finalSolde = Math.round((@(HomeController.getUserSession()).getSolde() - tmpAmount) * 100) / 100;
+            var finalSolde = Math.round(( @HomeController.getUserSession().getSolde() - tmpAmount) * 100) / 100;
 
             //Création des affichages
             textAmount = textAmount.concat(tmpAmount);
@@ -126,7 +126,7 @@ Permet d'afficher une liste de sous catégorie
 
 <script type = "text/javascript">
         function displayRecurrenceIncome() {
-            if (document.getElementById('chk2').checked)
+            if (document.getElementById('chk5').checked)
             {
                 document.getElementById("recurrence-income").style.display = "inline";
             } else
@@ -138,7 +138,7 @@ Permet d'afficher une liste de sous catégorie
 
 <script type = "text/javascript">
         function displayIncomeRemboursement() {
-            if (document.getElementById('chk3').checked)
+            if (document.getElementById('chk6').checked)
             {
                 document.getElementById("income-remboursement").style.display = "inline";
             } else
@@ -189,11 +189,11 @@ Permet d'afficher une liste de sous catégorie
         <form>
             <div class="form-group">
                 <label>Amount</label>
-                <input type="number" name="amount" id="amountId" step=0.05 value="0" min="0" max="100000000" class="form-control"  placeholder="">
+                <input type="number" name="amount" id="amountIdIncome" step=0.05 value="0" min="0" max="100000000" class="form-control"  placeholder="">
             </div> <!-- form-group end.// -->
 
             <div>
-                <input id="chk3" type="checkbox" data-toggle="toggle" onclick="displayIncomeRemboursement()">
+                <input id="chk6" type="checkbox" data-toggle="toggle" onclick="displayIncomeRemboursement()">
                 <label for="check3">Remboursement</label>
             </div>
 
@@ -226,7 +226,7 @@ Permet d'afficher une liste de sous catégorie
 
 
 
-            <input id="chk2" type="checkbox" data-toggle="toggle" onclick="displayRecurrenceIncome()">
+            <input id="chk5" type="checkbox" data-toggle="toggle" onclick="displayRecurrenceIncome()">
             <label for="check2">Recurrence</label>
             <div id="recurrence-income" class="hidden-categorie">
                 <div class="form-group">
@@ -242,19 +242,19 @@ Permet d'afficher une liste de sous catégorie
             <button type="button" data-toggle="modal" onclick="visualiseIncome();" class="btn btn-secondary btn-block" data-target="#visualizationIncome"> Visualize </button>
 
                 <!-- Modal -->
-            <div class="modal fade" id="visualizationIncome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div class="modal fade" id="visualizationIncome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabelIncome"
             aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Visualisation</h5>
+                            <h5 class="modal-title" id="exampleModalLabelIncome">Visualisation</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <form action="" method="get">
                             <div class="modal-body">
-                                <div><a>Base balance    : @(HomeController.getUserSession()).getSolde()</a></div>
+                                <div><a>Base balance    : @HomeController.getUserSession().getSolde()</a></div>
                                 <div><a id="amountVisualizeIncome"></a></div>
                                 <br>
                                 <div><a id="afterSoldeIncome"></a></div>
