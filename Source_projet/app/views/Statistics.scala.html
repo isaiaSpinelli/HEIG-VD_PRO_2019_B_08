@@ -20,6 +20,12 @@
 </script>
 
 <script type="text/javascript">
+    var categories = HomeController.DB.getAllCategories();
+    
+</script>
+
+
+<script type="text/javascript">
     function displayExpenseByCat(){
         var ctx = document.getElementById('myChart2').getContext('2d');
         var myChart = new Chart(ctx, {
