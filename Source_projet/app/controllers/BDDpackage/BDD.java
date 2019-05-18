@@ -145,7 +145,7 @@ public class BDD {
         config.setMaximumPoolSize(300);
         // minimumIdle is the minimum number of idle connections Hikari maintains in the pool.
         // Additional connections will be established to meet this value unless the pool is full.
-        config.setMinimumIdle(5);
+        config.setMinimumIdle(1);
         // [END cloud_sql_mysql_servlet_limit]
 
         // [START cloud_sql_mysql_servlet_timeout]
@@ -472,6 +472,7 @@ public class BDD {
                         rs.getDouble("solde"));
 
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

@@ -115,7 +115,9 @@ public class Utilisateur {
     /** Récupère le solde courant de l'utilisateur
      * @return le solde courant de l'utilisateur
      */
-    public double getSolde(){ return this.solde; }
+    public double getSolde(){
+        return this.solde;
+    }
 
     /** Récupère la liste des options des paramètres
      * @return la liste des options des paramètres
