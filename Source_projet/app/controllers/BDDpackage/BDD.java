@@ -1573,8 +1573,8 @@ public class BDD {
                 "public.modele_transaction.type_transaction_id FROM " + table("transaction") + " INNER JOIN " + table("modele_transaction")
                 + " ON " + table("transaction") + ".modele_transaction_id = " + table("modele_transaction") +
                 ".modele_transaction_id" + " INNER JOIN "+ table("sous_categorie")+ " ON " + table("modele_transaction")
-                +".sous_categorie_id = " +table("sous_categorie") + ".sous_categorie_id  WHERE " + table("modele_transaction") + ".utilisateur_id = ? ORDER BY + " +
-                table("transaction") + ".transaction_id DESC;";
+                +".sous_categorie_id = " +table("sous_categorie") + ".sous_categorie_id  WHERE " + table("modele_transaction") + ".utilisateur_id = ? ORDER BY "
+                + "public.transaction.date DESC, public.transaction.transaction_id DESC;";
 
         ArrayList<Transaction> trans = new ArrayList<>();
 
@@ -1869,7 +1869,7 @@ public class BDD {
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement pstmt = null;
-        String SQL = "SELECT * FROM public.notification WHERE public.notification.utilisateur_id = ?;";
+        String SQL = "SELECT * FROM public.notification WHERE public.notification.utilisateur_id = ? ORDER BY public.notification.notification_id DESC;";
 
         ArrayList<Notification> notifs = new ArrayList<>();
 
