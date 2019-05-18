@@ -79,7 +79,7 @@ public class HomeController extends Controller {
             Utilisateur user = DB.UtilisateurByID(valCo);
             session("userName", user.nom);
             session("userID", Integer.toString(user.id));
-
+            DB.check_recurrences(user.id);
         }
         errorMessageLogin = "Erreur, veuillez réessayer.";
         return redirect("/profil");

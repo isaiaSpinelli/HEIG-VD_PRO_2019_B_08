@@ -1690,6 +1690,18 @@ public class BDD {
         }
     }*/
 
+    public void check_recurrences(int user_id){
+        String SQL  = "CALL check_recurrences(?)";
+            try{
+                CallableStatement cs = getConnection().prepareCall(SQL);
+                cs.setInt(1, user_id);
+                cs.execute();
+            }
+            catch(SQLException ex){
+                Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+            }
+    }
+
     /** Tests quelques fonctions de la classe
      * @param args the command line arguments
      */
