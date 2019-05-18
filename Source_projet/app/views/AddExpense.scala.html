@@ -16,11 +16,15 @@
         var souscatfromscala = [@for(cat <- ((HomeController.DB).getAllCategories())){
             {catname:'@(cat.nom)', subcat:[
                     @for(subcat <- ((HomeController.DB).get_Sous_categorie(cat.id))){
-                    {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)'},
+                        // Permet de ne pas afficher les sous cat d'autre utilisateurs
+                        @if(subcat.is_global || (HomeController.DB).belongToUser(subcat.id, HomeController.getIdSession() ) ){
+                            {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)'},
+                        }
+
                     }
 
-     ]},
-            }];
+            ]},
+        }];
 </script>
 
 <script type="text/javascript">
