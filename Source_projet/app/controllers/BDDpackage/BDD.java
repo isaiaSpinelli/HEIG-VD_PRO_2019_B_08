@@ -32,6 +32,10 @@ import play.db.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 
 
 /** Base de donnée (Connections et Requêtes)
@@ -82,6 +86,9 @@ public class BDD {
         config.setMinimumIdle(30);
         pool = new HikariDataSource(config);
     }*/
+
+
+
 
     /**
      * Retourne le nom de l'utilisateur
@@ -1702,6 +1709,8 @@ public class BDD {
                 Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
             }
     }
+
+
 
     /** Tests quelques fonctions de la classe
      * @param args the command line arguments
