@@ -62,12 +62,23 @@ public class HomeController extends Controller {
     // Page d'accueil
     public Result index()  throws SQLException {
 
-        return ok(views.html.index.render("Compact Budget",this.getUserSession()));
+        if (session("userID") == null){
+            return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
+        } else {
+            return ok(views.html.index.render("Compact Budget",this.getUserSession()));
+        }
+
+
     }
 
     // Page d'accueil
     public Result Statistics()  throws SQLException {
-        return ok(views.html.Statistics.render("stats", this.getUserSession(),1));
+        if (session("userID") == null){
+            return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
+        } else {
+            return ok(views.html.Statistics.render("stats", this.getUserSession(),1));
+        }
+
     }
 
     // Gestion du login
@@ -96,7 +107,7 @@ public class HomeController extends Controller {
             idS = session("userID");
             // System.out.println(("id is: " + idS));
             id = Integer.parseInt(idS);
-    }
+        }
 
         return id;
     }
