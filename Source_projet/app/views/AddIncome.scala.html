@@ -92,7 +92,7 @@ Permet d'afficher une liste de sous catégorie
 </script>
 
 <script type = "text/javascript">
-        function visualiseExpense(){
+        function visualiseIncome(){
             //text base
             var textAmount = "Expense entered :";
             var textFinalSolde = "New balance     :";
@@ -108,13 +108,13 @@ Permet d'afficher une liste de sous catégorie
             textFinalSolde = textFinalSolde.concat(finalSolde);
 
             //affichage
-            document.getElementById("amountVisualize").innerHTML = textAmount;
-            document.getElementById("afterSolde").innerHTML = textFinalSolde;
+            document.getElementById("amountVisualizeIncome").innerHTML = textAmount;
+            document.getElementById("afterSoldeIncome").innerHTML = textFinalSolde;
         }
 </script>
 
 <script type = "text/javascript">
-        function sendVisualize()
+        function sendVisualizeIncome()
         {
             if(validateFormExpense())
             {
@@ -239,10 +239,10 @@ Permet d'afficher une liste de sous catégorie
                 </div> <!-- form-group end.// -->
             </div>
             <button type="submit" class="btn btn-primary btn-block">Add</button>
-            <button type="button" data-toggle="modal" onclick="visualiseExpense();" class="btn btn-secondary btn-block" data-target="#visualization"> Visualize </button>
+            <button type="button" data-toggle="modal" onclick="visualiseIncome();" class="btn btn-secondary btn-block" data-target="#visualizationIncome"> Visualize </button>
 
                 <!-- Modal -->
-            <div class="modal fade" id="visualization" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            <div class="modal fade" id="visualizationIncome" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -255,14 +255,14 @@ Permet d'afficher une liste de sous catégorie
                         <form action="" method="get">
                             <div class="modal-body">
                                 <div><a>Base balance    : @(HomeController.getUserSession()).getSolde()</a></div>
-                                <div><a id="amountVisualize"></a></div>
+                                <div><a id="amountVisualizeIncome"></a></div>
                                 <br>
-                                <div><a id="afterSolde"></a></div>
+                                <div><a id="afterSoldeIncome"></a></div>
                             </div>
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" onclick="sendVisualize();" class="btn btn-primary">Confirm changes</button>
+                                <button type="button" onclick="sendVisualizeIncome()" class="btn btn-primary">Confirm changes</button>
                             </div>
                         </form>
                     </div>
