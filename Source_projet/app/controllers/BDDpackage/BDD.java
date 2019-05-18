@@ -1860,6 +1860,47 @@ public class BDD {
         return Solde;
     }
 
+    /** Récupère toutes les notifications du user
+     * @param userId
+     * @return toutes les notifications du user
+     */
+    public ArrayList<Notification> getAllNotification(int userId)
+    {
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        String SQL = "SELECT * FROM public.notification WHERE public.notification.utilisateur_id = ?;";
+
+        ArrayList<Notification> notifs = new ArrayList<>();
+
+        try{
+            conn = getConnection();
+            pstmt = conn.prepareStatement(SQL);
+
+            pstmt.setInt(1, userId);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                notifs.add(new Notification(rs.getString(2),rs.getString(3)));
+
+            }
+
+           //  System.out.println(notifs.at(0).titre,notifs.at(0).message);
+
+        }
+        catch(SQLException ex){
+            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { pstmt.close(); } catch (Exception e) { /* ignored */ }
+            try { conn.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return notifs;
+
+    }
+
 
     /** Tests quelques fonctions de la classe
      * @param args the command line arguments

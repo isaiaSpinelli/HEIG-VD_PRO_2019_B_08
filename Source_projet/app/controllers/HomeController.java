@@ -494,4 +494,14 @@ public class HomeController extends Controller {
         int result = DB.addLimit(amount,userId,recId,0,catId);
         return redirect("/");
     }
+
+    public Result Notification()
+    {
+        if(this.getIdSession() == 0)
+        {
+            return redirect("/profil");
+        }
+
+        return ok( views.html.notification.render("Notif",this.getUserSession()));
+    }
 }
