@@ -1799,9 +1799,63 @@ public class BDD {
         return tabExpense;
     }
 
-    public int getSoldeByCategorie(int IDuser, int IDcat){
-        int Solde = 0;
+    /** Récupère le solde total d'une sous catégorie
+     * @param IDuser    l'ID du user
+     * @param IDSousCat l'ID de la sous catégorie
+     * @return Le solde total d'une sous catégorie
+     */
+    public int getSoldeBySousCategorie(int IDuser, int IDSousCat){
+        int Solde = -1;
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
 
+        String SQL = "select SUM(public.transaction.valeur) from public.transaction inner join public.modele_transaction \n" +
+                "\tON public.transaction.modele_transaction_id = public.modele_transaction.modele_transaction_id \n" +
+                "\tWHERE public.modele_transaction.utilisateur_id = ?  AND public.modele_transaction.sous_categorie_id = ?\n" +
+                "\tAND public.modele_transaction.type_transaction_id = 1;";
+
+        try{
+            conn = getConnection();
+            pstmt = conn.prepareStatement(SQL);
+
+            pstmt.setInt(1, IDuser);
+            pstmt.setInt(2,IDSousCat);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Solde = rs.getInt(1);
+            }
+        }
+        catch(SQLException ex){
+            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { pstmt.close(); } catch (Exception e) { /* ignored */ }
+            try { conn.close(); } catch (Exception e) { /* ignored */ }
+        }
+
+
+        return Solde;
+    }
+
+    /** Récupère le solde total d'une catégorie
+     * @param IDuser    ID du user
+     * @param IDCat     UD de la catégorie
+     * @return le solde total d'un catégorie
+     */
+    public int getSoldeByCategorie(int IDuser, int IDCat){
+        int Solde = 0;
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+
+        ArrayList<SousCategorie> tabSousCategories = get_Sous_categorie(IDCat);
+
+        for(SousCategorie sousCategorie : tabSousCategories){
+            Solde += getSoldeBySousCategorie(IDuser, sousCategorie.id );
+        }
 
         return Solde;
     }
