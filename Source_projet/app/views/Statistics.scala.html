@@ -65,7 +65,6 @@
 
         // chart colors
         var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
-
         /* large line chart */
         var chLine = document.getElementById("chLine2");
         var chartData = {
@@ -136,7 +135,9 @@
                                     }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
                                 datasets: [{
                                     data: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
+                                        @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
+
+                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),}
                                         }],
                                     //[12, 19, 3, 5, 2, 3],
                                     backgroundColor: [
