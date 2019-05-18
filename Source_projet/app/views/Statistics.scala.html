@@ -13,6 +13,7 @@
             {catid:'@(cat.id)', catname:'@(cat.nom)'},
             }];
 
+
         var souscatfromscala = [@for(cat <- ((HomeController.DB).getAllCategories())){
             {catname:'@(cat.nom)', subcat:[
                     @for(subcat <- ((HomeController.DB).get_Sous_categorie(cat.id))){
@@ -20,87 +21,91 @@
                     }
                 ]},
             }];
+
+
 </script>
 
 
 <script type="text/javascript">
-    function displayExpenseByCat(){
-        var ctx = document.getElementById('myChart2').getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
-                    '@(cat.getName())',}
-                    }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                datasets: [{
-                    data: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
-                        }],
-                    //[12, 19, 3, 5, 2, 3],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
-                        'rgba(54, 162, 235, 0.2)',
-                        'rgba(255, 206, 86, 0.2)',
-                        'rgba(75, 192, 192, 0.2)',
-                        'rgba(153, 102, 255, 0.2)',
-                        'rgba(255, 159, 64, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
             }
-        });
+            return color;
+        }
+</script>
 
 
-        // chart colors
-        var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
-        /* large line chart */
-        var chLine = document.getElementById("chLine2");
-        var chartData = {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
-            datasets: [{
-                data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
-                backgroundColor: 'transparent',
-                borderColor: colors[0],
-                borderWidth: 4,
-                pointBackgroundColor: colors[0]
+<script type="text/javascript">
+        function displayExpenseByCat(){
+            var ctx = document.getElementById('myChart2').getContext('2d');
+            var colors;
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                        @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
+                        '@(cat.getName())',}
+                        }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        data: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                            @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
+                            }],
+                        //[12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
+                            getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
+                        ],
 
-            }],
-            options: {
-                responsive: true
-            }
-        };
-
-        if (chLine) {
-            new Chart(chLine, {
-                type: 'line',
-                data: chartData,
+                        borderWidth: .2
+                    }]
+                },
                 options: {
-                    scales: {
-                        yAxes: [{
-                            ticks: {
-                                beginAtZero: false
-                            }
-                        }]
-                    },
-                    legend: {
-                        display: false
-                    }
+                    responsive: true
                 }
             });
+
+
+            // chart colors
+            var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
+            /* large line chart */
+            var chLine = document.getElementById("chLine2");
+            var chartData = {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+                datasets: [{
+                    data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
+                    backgroundColor: 'transparent',
+                    borderColor: colors[0],
+                    borderWidth: 4,
+                    pointBackgroundColor: colors[0]
+
+                }],
+                options: {
+                    responsive: true
+                }
+            };
+
+            if (chLine) {
+                new Chart(chLine, {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
+            }
         }
-    }
 </script>
 
 <script type="text/javascript">
@@ -119,7 +124,7 @@
 
 @main(titre: String)(user) {
     <h3>Statistiques</h3>
-    <div class="container">
+    <div>
         <div class="row">
             <div class="col-md border shadow-lg p-4 mb-4 home-row">
                 <h5>Overall expenses</h5>
@@ -141,22 +146,11 @@
                                         }],
                                     //[12, 19, 3, 5, 2, 3],
                                     backgroundColor: [
-                                        'rgba(255, 99, 132, 0.2)',
-                                        'rgba(54, 162, 235, 0.2)',
-                                        'rgba(255, 206, 86, 0.2)',
-                                        'rgba(75, 192, 192, 0.2)',
-                                        'rgba(153, 102, 255, 0.2)',
-                                        'rgba(255, 159, 64, 0.2)'
+                                        getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
+                                        getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
                                     ],
-                                    borderColor: [
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
-                                    ],
-                                    borderWidth: 1
+
+                                    borderWidth: .2
                                 }]
                             },
                             options: {
@@ -176,7 +170,9 @@
                         var chartData = {
                             labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
                             datasets: [{
-                                data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
+                                data: [@for(laThuneFrr <- ((HomeController.DB).getSoldeOverAllOneYear((HomeController.getIdSession())))){
+                                    '@(laThuneFrr.solde)',
+                                    }],
                                 backgroundColor: 'transparent',
                                 borderColor: colors[0],
                                 borderWidth: 4,
@@ -206,7 +202,7 @@
                 </script>
             </div>
 
-                <div class="col-md border shadow-lg p-4 mb-4 home-row">
+            <div class="col-md border shadow-lg p-4 mb-4 home-row">
                 <h5>Expenses by categorie</h5>
                 <select  id="catSelStats" name="categorie" class="form-control" onchange="displayExpenseByCat();">
                     <option value="0" selected>Choose...</option>
