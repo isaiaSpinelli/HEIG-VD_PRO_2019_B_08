@@ -149,19 +149,19 @@ Permet d'afficher une liste de sous catégorie
 </script>
 
 <script type = "text/javascript">
-        function validateFormExpense() {
-            var x = document.forms["form-add-expense"]["amount"].value;
+        function validateFormIncome() {
+            var x = document.forms["form-add-income"]["amount"].value;
             if(x == "0") {
                 alert("Insert a valid amount");
                 return false;
             }
 
-            x = document.forms["form-add-expense"]["categorie"].value;
+            x = document.forms["form-add-income"]["categorie"].value;
             if (x == "0" || x == 0) {
                 alert("Choose a categorie");
                 return false;
             }
-            x = document.forms["form-add-expense"]["categorie"].value;
+            x = document.forms["form-add-income"]["categorie"].value;
             if(x != 17 && x != 9){
                 if(document.forms["form-add-expense"]["sous-categorie"].value == "0" ){
                     alert("Choose a subcategorie");
@@ -184,7 +184,7 @@ Permet d'afficher une liste de sous catégorie
 <div id="collapseTwo" class="collapse " aria-labelledby="headingTwo" data-parent="#accordion">
     <div class="card-body sidebar-menu-text">
 
-    @helper.form(action = helper.CSRF(routes.HomeController.AddExpense()),'name -> "form-add-expense" ,'onsubmit -> "return validateFormExpense();") {
+    @helper.form(action = helper.CSRF(routes.HomeController.AddExpense()),'name -> "form-add-income" ,'onsubmit -> "return validateFormIncome();") {
 
         <form>
             <div class="form-group">
