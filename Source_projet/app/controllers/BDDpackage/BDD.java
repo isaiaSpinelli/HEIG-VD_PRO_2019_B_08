@@ -1690,15 +1690,25 @@ public class BDD {
         }
     }*/
 
+    /** Fonction permettant la mise à jour des paiements recurrents via un appel a la procedure prevue a cet effet
+     * @param user_id ID de l'utilisateur à mettre a jour
+     */
     public void check_recurrences(int user_id){
+        Connection conn = null;
+        CallableStatement cs = null;
+
         String SQL  = "CALL check_recurrences(?)";
             try{
-                CallableStatement cs = getConnection().prepareCall(SQL);
+                conn = getConnection();
+                cs = conn.prepareCall(SQL);
                 cs.setInt(1, user_id);
                 cs.execute();
             }
             catch(SQLException ex){
                 Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+            }finally {
+                try { cs.close(); } catch (Exception e) { /* ignored */ }
+                try { conn.close(); } catch (Exception e) { /* ignored */ }
             }
     }
 
