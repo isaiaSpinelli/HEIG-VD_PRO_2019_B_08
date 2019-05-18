@@ -65,6 +65,7 @@ public class HomeController extends Controller {
         if (session("userID") == null){
             return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
         } else {
+            DB.getSoldeOverAllOneYear(8);
             return ok(views.html.index.render("Compact Budget",this.getUserSession()));
         }
 
