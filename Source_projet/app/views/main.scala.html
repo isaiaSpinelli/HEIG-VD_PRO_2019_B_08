@@ -77,25 +77,34 @@
 
         <!-- <div id="outNav" class="out-side-nav" onclick="closeNav()"></div> -->
 
+        @*Si il n'y a pas de session, ne gère le bouton*@
+        @if(HomeController.getIdSession() != 0){
+
         <div class="position-fixed" style="top:160px; right:5px; z-index:99999">
             <img id="btn-main" src="https://image.flaticon.com/icons/png/512/107/107661.png" onclick="openNav()"
                 style="cursor: pointer" class="rounded-circle" alt="more" width="50" height="50">
 
             <div id="mySidenav" class="sidenav">
                 <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-                <div id="accordion">
-                    <div class="card-main">
-                        @views.html.AddExpense.render(user )
+
+
+
+                    <div id="accordion">
+                        <div class="card-main">
+                            @views.html.AddExpense.render(user )
+                        </div>
+                        <div class="card-main">
+                            @views.html.AddIncome.render(user )
+                        </div>
+                        <div class="card-main">
+                            @views.html.AddLimit.render(user )
+                        </div>
                     </div>
-                    <div class="card-main">
-                        @views.html.AddIncome.render(user )
-                    </div>
-                    <div class="card-main">
-                        @views.html.AddLimit.render(user )
-                    </div>
-                </div>
+
+
             </div>
         </div>
+        }
         <!-- Gestion bouton add -->
         <div id="main" style="z-index:0" onclick="closeNav()">
         <!-- Navigation -->
