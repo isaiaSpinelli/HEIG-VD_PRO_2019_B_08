@@ -156,16 +156,18 @@ Permet d'afficher une liste de sous catégorie
                 return false;
             }
 
-            x = document.forms["form-add-income"]["categorie"].value;
-            if (x == "0" || x == 0) {
-                alert("Choose a categorie");
-                return false;
-            }
-            x = document.forms["form-add-income"]["categorie"].value;
-            if(x != 17 && x != 9){
-                if(document.forms["form-add-expense"]["sous-categorie"].value == "0" ){
-                    alert("Choose a subcategorie");
+            if(document.getElementById('chk6').checked){
+                x = document.forms["form-add-income"]["categorie"].value;
+                if (x == "0" || x == 0) {
+                    alert("Choose a categorie");
                     return false;
+                }
+                x = document.forms["form-add-income"]["categorie"].value;
+                if(x != 17 && x != 9){
+                    if(document.forms["form-add-expense"]["sous-categorie"].value == "0" ){
+                        alert("Choose a subcategorie");
+                        return false;
+                    }
                 }
             }
             return true;
