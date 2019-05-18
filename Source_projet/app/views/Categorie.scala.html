@@ -24,7 +24,7 @@
 
                 <div id=@cat.id class="panel-collapse collapse">
                 @* si c'est la catégorie sans catégorisation, ne pas proposer d'ajouter une sous cat *@
-                @if(cat.nom != "Sans catégorisation") {
+                @if(cat.nom != "Sans catégorisation" && cat.nom != "Revenu") {
                     @for(sousCat <- (HomeController.DB).get_Sous_categorie(cat.id)){
                         @if(sousCat.is_global || (HomeController.DB).belongToUser(sousCat.id, user.getId() ) ){
                             <div class="panel-body">

@@ -21,7 +21,6 @@
 
 <script type="text/javascript">
     function displayExpenseByCat(){
-
         var ctx = document.getElementById('myChart2').getContext('2d');
         var myChart = new Chart(ctx, {
             type: 'pie',
@@ -74,7 +73,10 @@
                 borderWidth: 4,
                 pointBackgroundColor: colors[0]
 
-            }]
+            }],
+            options: {
+                responsive: true
+            }
         };
 
         if (chLine) {
@@ -206,12 +208,8 @@
                 </select>
                 <canvas id="myChart2"></canvas>
                 <br><br>
-                <canvas id="chLine2" height="100"></canvas>
-
-
+                <canvas id="chLine2"></canvas>
             </div>
         </div>
     </div>
-
-
 }
