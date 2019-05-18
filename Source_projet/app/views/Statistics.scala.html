@@ -126,9 +126,9 @@
     <h3>Statistiques</h3>
     <div>
         <div class="row">
-            <div class="col-md border shadow-lg p-4 mb-4 home-row">
+            <div class="col-md col-lg-6 border shadow-lg p-4 mb-4 home-row">
                 <h5>Overall expenses</h5>
-                <canvas id="myChart"></canvas>
+                <canvas id="myChart" height="200px"></canvas>
                 <script>
                         var ctx = document.getElementById('myChart').getContext('2d');
                         var myChart = new Chart(ctx, {
@@ -160,7 +160,7 @@
                 </script>
                 <br><br>
                 <h5>Overall Expenses last 12 months</h5>
-                <canvas id="chLine" height="100"></canvas>
+                <canvas id="chLine" height="100px"></canvas>
                 <script>
                         // chart colors
                         var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
@@ -208,9 +208,9 @@
                     <option value="0" selected>Choose...</option>
                     <script type = "text/javascript">displayCatStats()</script>
                 </select>
-                <canvas id="myChart2"></canvas>
+                <canvas id="myChart2" height="200px"></canvas>
                 <br><br>
-                <canvas id="chLine2"></canvas>
+                <canvas id="chLine2" height="100px"></canvas>
             </div>
         </div>
     </div>
