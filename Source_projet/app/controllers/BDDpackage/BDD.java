@@ -32,9 +32,10 @@ import play.db.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
+
+import java.util.Calendar;
+
+import controllers.BDDpackage.MonthlyExpense;
 
 
 
@@ -1719,6 +1720,79 @@ public class BDD {
                 try { conn.close(); } catch (Exception e) { /* ignored */ }
             }
     }
+
+
+    /** Permet de
+     * @param diffNowMonth
+     * @return
+     */
+    public MonthlyExpense getSoldeOverAllOneMonth(int diffNowMonth, int idUser)
+    {
+        MonthlyExpense monthlyExpense = null;
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+
+        String[] monthName = {"January", "February",
+                "March", "April", "May", "June", "July",
+                "August", "September", "October", "November",
+                "December"};
+
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+        // Récupèration du nom du mois
+        String nameMonth = monthName[month];
+        int soldeMois = -1;
+
+        int realMonth = month-diffNowMonth;
+        if (realMonth < 0){
+            realMonth = (12 + realMonth) ;
+            year--;
+        }
+
+        String moisVoulu = String.format("%02d" , realMonth+1);
+
+        String SQL = "Select SUM(public.transaction.valeur) from public.transaction inner join public.modele_transaction \n" +
+                "\tON public.transaction.modele_transaction_id = public.modele_transaction.modele_transaction_id \n" +
+                "\tWHERE public.modele_transaction.utilisateur_id = ?  AND public.transaction.date::text LIKE '"+year+"-"+moisVoulu+"%'  ;";
+
+        try{
+            conn = getConnection();
+            pstmt = conn.prepareStatement(SQL);
+
+            pstmt.setInt(1, idUser);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                soldeMois = rs.getInt(1);
+            }
+
+            monthlyExpense = new MonthlyExpense(nameMonth,soldeMois);
+
+        }
+        catch(SQLException ex){
+            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { pstmt.close(); } catch (Exception e) { /* ignored */ }
+            try { conn.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return monthlyExpense;
+    }
+
+    public ArrayList<MonthlyExpense> getSoldeOverAllOneYear(int idUser){
+        ArrayList<MonthlyExpense> tabExpense = new ArrayList<MonthlyExpense>();
+
+
+        for(int i=11; i >= 0; --i){
+            tabExpense.add(getSoldeOverAllOneMonth(i,idUser));
+        }
+
+        return tabExpense;
+    }
+
 
 
 
