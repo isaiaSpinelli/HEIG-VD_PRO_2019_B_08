@@ -1722,9 +1722,9 @@ public class BDD {
     }
 
 
-    /** Permet de
+    /** Permet de récupèrer le solde total d'un mois
      * @param diffNowMonth
-     * @return
+     * @return Le nom du mois et le solde
      */
     public MonthlyExpense getSoldeOverAllOneMonth(int diffNowMonth, int idUser)
     {
@@ -1741,8 +1741,6 @@ public class BDD {
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH);
         int year = cal.get(Calendar.YEAR);
-        // Récupèration du nom du mois
-        String nameMonth = monthName[month];
         int soldeMois = -1;
 
         int realMonth = month-diffNowMonth;
@@ -1751,11 +1749,15 @@ public class BDD {
             year--;
         }
 
+        // Récupèration du nom du mois
+        String nameMonth = monthName[realMonth];
+
         String moisVoulu = String.format("%02d" , realMonth+1);
 
         String SQL = "Select SUM(public.transaction.valeur) from public.transaction inner join public.modele_transaction \n" +
                 "\tON public.transaction.modele_transaction_id = public.modele_transaction.modele_transaction_id \n" +
-                "\tWHERE public.modele_transaction.utilisateur_id = ?  AND public.transaction.date::text LIKE '"+year+"-"+moisVoulu+"%'  ;";
+                "\tWHERE public.modele_transaction.utilisateur_id = ?  AND public.transaction.date::text LIKE '"+year+"-"+moisVoulu+"%' \n" +
+                "\tAND public.modele_transaction.type_transaction_id = 1";
 
         try{
             conn = getConnection();
@@ -1782,6 +1784,10 @@ public class BDD {
         return monthlyExpense;
     }
 
+    /** Permet de récupèrer tous les soldes de tous les 12 derniers moins
+     * @param idUser    ID du user concerné
+     * @return  Une liste des noms des moins avec les soldes
+     */
     public ArrayList<MonthlyExpense> getSoldeOverAllOneYear(int idUser){
         ArrayList<MonthlyExpense> tabExpense = new ArrayList<MonthlyExpense>();
 
@@ -1793,7 +1799,12 @@ public class BDD {
         return tabExpense;
     }
 
+    public int getSoldeByCategorie(int IDuser, int IDcat){
+        int Solde = 0;
 
+
+        return Solde;
+    }
 
 
     /** Tests quelques fonctions de la classe
