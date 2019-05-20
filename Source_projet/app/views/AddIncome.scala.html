@@ -186,7 +186,7 @@ Permet d'afficher une liste de sous catégorie
 <div id="collapseTwo" class="collapse " aria-labelledby="headingTwo" data-parent="#accordion">
     <div class="card-body sidebar-menu-text">
 
-    @helper.form(action = helper.CSRF(routes.HomeController.AddExpense()),'name -> "form-add-income" ,'onsubmit -> "return validateFormIncome();") {
+    @helper.form(action = helper.CSRF(routes.HomeController.AddIncome()),'name -> "form-add-income" ,'onsubmit -> "return validateFormIncome();") {
 
         <form>
             <div class="form-group">

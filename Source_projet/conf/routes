@@ -19,8 +19,11 @@ GET     /modifoptions                  controllers.HomeController.ModifOptionsSu
 POST    /modifprofile                  controllers.HomeController.ModifProfile
 GET     /historique                    controllers.HomeController.Historique
 POST    /AddExpense                    controllers.HomeController.AddExpense
+POST    /AddIncome                    controllers.HomeController.AddIncome
 GET     /historiqueCat                 controllers.HomeController.historiqueCat(cat : Integer)
 POST    /AddLimit                      controllers.HomeController.AddLimit
+GET     /notification                  controllers.HomeController.Notification
+
 
 
 # Map static resources from the /public folder to the /assets URL path

@@ -1,0 +1,44 @@
+@import controllers.BDDpackage.Utilisateur
+@import controllers.BDDpackage.BDD
+@import controllers.BDDpackage.Transaction
+
+@(titre: String, user : Utilisateur)
+
+@main(titre: String)(user) {
+
+    <h3>Notifications </h3>
+    <div class="container">
+        <div class="row">
+
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Titre</th>
+                            <th scope="col">message</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if(((HomeController.DB).getAllNotification(user.getId())).size() != 0){
+                            @for(notif <- (HomeController.DB).getAllNotification(user.getId())){
+                                <tr>
+                                    <th scope="row">@notif.titre</th>
+
+                                    <td style="color:#364550">@notif.message</td>
+                                </tr>
+                            }
+                        }else{
+                            <tr>
+                                <td>
+                                    <p> Pas de transactions à afficher</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+}

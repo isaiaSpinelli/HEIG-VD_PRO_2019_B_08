@@ -1573,8 +1573,8 @@ public class BDD {
                 "public.modele_transaction.type_transaction_id FROM " + table("transaction") + " INNER JOIN " + table("modele_transaction")
                 + " ON " + table("transaction") + ".modele_transaction_id = " + table("modele_transaction") +
                 ".modele_transaction_id" + " INNER JOIN "+ table("sous_categorie")+ " ON " + table("modele_transaction")
-                +".sous_categorie_id = " +table("sous_categorie") + ".sous_categorie_id  WHERE " + table("modele_transaction") + ".utilisateur_id = ? ORDER BY + " +
-                table("transaction") + ".transaction_id DESC;";
+                +".sous_categorie_id = " +table("sous_categorie") + ".sous_categorie_id  WHERE " + table("modele_transaction") + ".utilisateur_id = ? ORDER BY "
+                + "public.transaction.date DESC, public.transaction.transaction_id DESC;";
 
         ArrayList<Transaction> trans = new ArrayList<>();
 
@@ -1858,6 +1858,47 @@ public class BDD {
         }
 
         return Solde;
+    }
+
+    /** Récupère toutes les notifications du user
+     * @param userId
+     * @return toutes les notifications du user
+     */
+    public ArrayList<Notification> getAllNotification(int userId)
+    {
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        String SQL = "SELECT * FROM public.notification WHERE public.notification.utilisateur_id = ? ORDER BY public.notification.notification_id DESC;";
+
+        ArrayList<Notification> notifs = new ArrayList<>();
+
+        try{
+            conn = getConnection();
+            pstmt = conn.prepareStatement(SQL);
+
+            pstmt.setInt(1, userId);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                notifs.add(new Notification(rs.getString(2),rs.getString(3)));
+
+            }
+
+           //  System.out.println(notifs.at(0).titre,notifs.at(0).message);
+
+        }
+        catch(SQLException ex){
+            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { pstmt.close(); } catch (Exception e) { /* ignored */ }
+            try { conn.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return notifs;
+
     }
 
 
