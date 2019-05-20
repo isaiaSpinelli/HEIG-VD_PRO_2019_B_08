@@ -14,17 +14,53 @@
             }];
 
 
-        var souscatfromscala = [@for(cat <- ((HomeController.DB).getAllCategories())){
+        var souscatfromscalawithexpense = [@for(cat <- ((HomeController.DB).getAllCategories())){
             {catname:'@(cat.nom)', subcat:[
                     @for(subcat <- ((HomeController.DB).get_Sous_categorie(cat.id))){
-                    {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)'},
-                    }
-                ]},
-            }];
+                    {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)', subcatexpense: '@((HomeController.DB).getSoldeBySousCategorie((HomeController.getIdSession()), subcat.id))'},
+
+                }
+
+            ]},
+        }];
+
+var names = [];
+var data = [];
+        var myChart;
+        var myChart2;
+
+</script>
+
+
+
+<script type="text/javascript">
 
 
 </script>
 
+<script type="text/javascript">
+        function updateSubcatArrays() {
+
+            data = [];
+            names = [];
+
+            var sel = document.getElementById("catSelStats");
+            var selected_categorie = sel.options[sel.selectedIndex].text;
+
+           for (var cat in souscatfromscalawithexpense){
+               if(souscatfromscalawithexpense[cat].catname == selected_categorie){
+
+                   for(var souscat in souscatfromscalawithexpense[cat].subcat){
+                       if(souscatfromscalawithexpense[cat].subcat[souscat].subcatexpense > 0){
+                           data.push(souscatfromscalawithexpense[cat].subcat[souscat].subcatexpense);
+                           names.push(souscatfromscalawithexpense[cat].subcat[souscat].subcatname);
+                       }
+                    }
+                }
+           }
+        }
+
+</script>
 
 <script type="text/javascript">
         function getRandomColor() {
@@ -40,19 +76,20 @@
 
 <script type="text/javascript">
         function displayExpenseByCat(){
+            if(myChart2 != null){
+                myChart2.destroy();
+
+            }
+
+            updateSubcatArrays();
             var ctx = document.getElementById('myChart2').getContext('2d');
             var colors;
-            var myChart = new Chart(ctx, {
+            myChart2 = new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                        @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
-                        '@(cat.getName())',}
-                        }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    labels: names,
                     datasets: [{
-                        data: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                            @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),
-                            }],
+                        data: data,
                         //[12, 19, 3, 5, 2, 3],
                         backgroundColor: [
                             getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
@@ -76,7 +113,7 @@
                 labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
                 datasets: [{
                     data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
-                    backgroundColor: 'transparent',
+                    backgroundColor: colors[0],
                     borderColor: colors[0],
                     borderWidth: 4,
                     pointBackgroundColor: colors[0]
@@ -89,7 +126,7 @@
 
             if (chLine) {
                 new Chart(chLine, {
-                    type: 'line',
+                    type: 'bar',
                     data: chartData,
                     options: {
                         scales: {
@@ -129,7 +166,8 @@
             <div class="col-md col-lg-6 border shadow-lg p-4 mb-4 home-row">
                 <h5>Overall expenses</h5>
                 <canvas id="myChart" height="200px"></canvas>
-                <script>
+                <script type="text/javascript">
+
                         var ctx = document.getElementById('myChart').getContext('2d');
                         var myChart = new Chart(ctx, {
                             type: 'pie',
@@ -173,7 +211,7 @@
                                 data: [@for(laThuneFrr <- ((HomeController.DB).getSoldeOverAllOneYear((HomeController.getIdSession())))){
                                     '@(laThuneFrr.solde)',
                                     }],
-                                backgroundColor: 'transparent',
+                                backgroundColor: colors[0],
                                 borderColor: colors[0],
                                 borderWidth: 4,
                                 pointBackgroundColor: colors[0]
@@ -183,7 +221,7 @@
 
                         if (chLine) {
                             new Chart(chLine, {
-                                type: 'line',
+                                type: 'bar',
                                 data: chartData,
                                 options: {
                                     scales: {

@@ -20,9 +20,7 @@
                         @if(subcat.is_global || (HomeController.DB).belongToUser(subcat.id, HomeController.getIdSession() ) ){
                             {subcatid: '@(subcat.id)', subcatname:'@(subcat.nom)'},
                         }
-
                     }
-
             ]},
         }];
 </script>
