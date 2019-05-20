@@ -191,9 +191,10 @@ public class HomeController extends Controller {
 
 
         int idResult = 0;
+        String nom = form.get("name");
         if(!error)
         {
-            idResult = DB.addUser(form.get("surname"),form.get("name"),form.get("email"),form.get("username")
+            idResult = DB.addUser(form.get("surname"),nom,form.get("email"),form.get("username")
              , BCrypt.hashpw(form.get("password"), BCrypt.gensalt()), form.get("genre"),form.get("anniversaire")
              , Integer.parseInt(form.get("statut"))
              , Integer.parseInt(form.get("pays")), opt,solde);
@@ -206,7 +207,9 @@ public class HomeController extends Controller {
         ArrayList<Statut> statut = new ArrayList<Statut>();
         statut = DB.get_Statut();
         if(idResult != 0) {
-            //?? user = DB.UtilisateurByID(idResult);
+            session("userName", nom);
+            session("userID", Integer.toString(idResult));
+            //Utilisateur user = DB.UtilisateurByID(idResult);
             return ok( views.html.utilisateur.render( this.getUserSession(),0,"") );
         }
         else if(!error)
