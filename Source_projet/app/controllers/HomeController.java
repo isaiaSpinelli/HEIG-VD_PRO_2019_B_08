@@ -65,10 +65,9 @@ public class HomeController extends Controller {
         if (session("userID") == null){
             return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
         } else {
+            session().clear();
             return ok(views.html.index.render("Compact Budget",this.getUserSession()));
         }
-
-
     }
 
     // Page d'accueil
