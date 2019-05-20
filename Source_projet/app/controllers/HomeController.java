@@ -63,9 +63,9 @@ public class HomeController extends Controller {
     public Result index()  throws SQLException {
 
         if (session("userID") == null){
+            session().clear();
             return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
         } else {
-            session().clear();
             return ok(views.html.index.render("Compact Budget",this.getUserSession()));
         }
     }
