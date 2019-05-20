@@ -304,7 +304,7 @@ public class HomeController extends Controller {
 
 
         int alerte = 2;
-        String message = "Success insertion ";
+        String message = "Insertion successful ";
 
         // Recherche la categorie selectionné
         Categorie categorieChoisi = DB.CategorieByID(categorie_id);
@@ -473,7 +473,7 @@ public class HomeController extends Controller {
         String message = "Fail PDF !";
         if ( pdf.cree() ){
             alerte = 2;
-            message = "Sucessfull PDF !";
+            message = "Successfull PDF !";
         }
 
 
