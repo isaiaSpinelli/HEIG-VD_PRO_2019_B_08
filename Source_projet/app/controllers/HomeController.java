@@ -239,11 +239,11 @@ public class HomeController extends Controller {
         // Get user_id
         if(this.getIdSession() == 0)
         {
+            session().clear();
             return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
         }
         else
         {
-
             return ok( views.html.utilisateur.render( this.getUserSession(),0,"") );
         }
 
@@ -360,6 +360,7 @@ public class HomeController extends Controller {
 
     public Result ModifProfile() {
         if (this.getIdSession() == 0) {
+            session().clear();
             return ok(views.html.index.render("Compact Budget",this.getUserSession()));
         } else {
             DynamicForm form = formFactory.form().bindFromRequest();
