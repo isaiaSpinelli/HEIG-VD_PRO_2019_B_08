@@ -90,12 +90,10 @@ var data = [];
                     labels: names,
                     datasets: [{
                         data: data,
-                        //[12, 19, 3, 5, 2, 3],
                         backgroundColor: [
                             getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
                             getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
                         ],
-
                         borderWidth: .2
                     }]
                 },
@@ -146,6 +144,77 @@ var data = [];
 </script>
 
 <script type="text/javascript">
+        function displayExpenseOverall(){
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                        @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
+                        '@(cat.getName())',}
+                        }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                    datasets: [{
+                        data: [@for(cat <- ((HomeController.DB).getAllCategories())){
+                            @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
+
+                            @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),}
+                            }],
+                        //[12, 19, 3, 5, 2, 3],
+                        backgroundColor: [
+                            getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
+                            getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
+                        ],
+
+                        borderWidth: .2
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+
+            // chart colors
+            var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
+
+            /* large line chart */
+            var chLine = document.getElementById("chLine");
+            var chartData = {
+                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+                datasets: [{
+                    data: [@for(laThuneFrr <- ((HomeController.DB).getSoldeOverAllOneYear((HomeController.getIdSession())))){
+                        '@(laThuneFrr.solde)',
+                        }],
+                    backgroundColor: colors[0],
+                    borderColor: colors[0],
+                    borderWidth: 4,
+                    pointBackgroundColor: colors[0]
+
+                }]
+            };
+
+            if (chLine) {
+                new Chart(chLine, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: false
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
+            }
+        }
+</script>
+
+<script type="text/javascript">
         function displayCatStats(){
             var catSel = document.getElementById("catSelStats");
             var keys = Object.keys(catfromscala);
@@ -160,94 +229,30 @@ var data = [];
 </script>
 
 @main(titre: String)(user) {
-    <h3>Statistiques</h3>
+    <body onload="displayExpenseByCat();displayExpenseOverall()"><div ><h3>Statistiques</h3></div>
     <div>
         <div class="row">
             <div class="col-md col-lg-6 border shadow-lg p-4 mb-4 home-row">
-                <h5>Overall expenses</h5>
+                <div style="height: 100px">
+                    <div class="div-centered-panel"><h5>Overall expenses</h5></div>
+                </div>
                 <canvas id="myChart" height="200px"></canvas>
-                <script type="text/javascript">
-
-                        var ctx = document.getElementById('myChart').getContext('2d');
-                        var myChart = new Chart(ctx, {
-                            type: 'pie',
-                            data: {
-                                labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                    @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
-                                    '@(cat.getName())',}
-                                    }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                                datasets: [{
-                                    data: [@for(cat <- ((HomeController.DB).getAllCategories())){
-                                        @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
-
-                                        @((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)),}
-                                        }],
-                                    //[12, 19, 3, 5, 2, 3],
-                                    backgroundColor: [
-                                        getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
-                                        getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
-                                    ],
-
-                                    borderWidth: .2
-                                }]
-                            },
-                            options: {
-                                responsive: true
-                            }
-                        });
-                </script>
                 <br><br>
-                <h5>Overall Expenses last 12 months</h5>
+                <div class="div-centered-panel"><h5>12 last months</h5></div>
                 <canvas id="chLine" height="100px"></canvas>
-                <script>
-                        // chart colors
-                        var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
-
-                        /* large line chart */
-                        var chLine = document.getElementById("chLine");
-                        var chartData = {
-                            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
-                            datasets: [{
-                                data: [@for(laThuneFrr <- ((HomeController.DB).getSoldeOverAllOneYear((HomeController.getIdSession())))){
-                                    '@(laThuneFrr.solde)',
-                                    }],
-                                backgroundColor: colors[0],
-                                borderColor: colors[0],
-                                borderWidth: 4,
-                                pointBackgroundColor: colors[0]
-
-                            }]
-                        };
-
-                        if (chLine) {
-                            new Chart(chLine, {
-                                type: 'bar',
-                                data: chartData,
-                                options: {
-                                    scales: {
-                                        yAxes: [{
-                                            ticks: {
-                                                beginAtZero: false
-                                            }
-                                        }]
-                                    },
-                                    legend: {
-                                        display: false
-                                    }
-                                }
-                            });
-                        }
-                </script>
             </div>
 
-            <div class="col-md border shadow-lg p-4 mb-4 home-row">
-                <h5>Expenses by categorie</h5>
-                <select  id="catSelStats" name="categorie" class="form-control" onchange="displayExpenseByCat();">
-                    <option value="0" selected>Choose...</option>
-                    <script type = "text/javascript">displayCatStats()</script>
-                </select>
+            <div class="col-md col-lg-6 border shadow-lg p-4 mb-4 home-row">
+                <div style="height: 100px">
+                    <div class="div-centered-panel"><h5>Expenses by categorie</h5></div>
+                    <select  id="catSelStats" name="categorie" class="form-control" onchange="displayExpenseByCat();">
+                        <option value="0" selected>Choose...</option>
+                        <script type = "text/javascript">displayCatStats()</script>
+                    </select>
+                </div>
                 <canvas id="myChart2" height="200px"></canvas>
                 <br><br>
+                <div class="div-centered-panel"><h5>12 last months</h5></div>
                 <canvas id="chLine2" height="100px"></canvas>
             </div>
         </div>
