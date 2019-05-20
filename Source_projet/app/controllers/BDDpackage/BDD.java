@@ -1602,6 +1602,51 @@ public class BDD {
 
     }
 
+    /** Récupère les 5 dernières transactions d'un user
+     * @param userId
+     * @return 5 dernières transactions du user
+     */
+    public ArrayList<Transaction> getFiveLastTransactions(int userId)
+    {
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+        String SQL = "Select public.transaction.transaction_id, public.sous_categorie.nom, public.transaction.valeur," +
+
+                "public.transaction.date, public.modele_transaction.recurrence_id ,public.transaction.timestamp_solde," +
+                "public.modele_transaction.type_transaction_id FROM " + table("transaction") + " INNER JOIN " + table("modele_transaction")
+                + " ON " + table("transaction") + ".modele_transaction_id = " + table("modele_transaction") +
+                ".modele_transaction_id" + " INNER JOIN "+ table("sous_categorie")+ " ON " + table("modele_transaction")
+                +".sous_categorie_id = " +table("sous_categorie") + ".sous_categorie_id  WHERE " + table("modele_transaction") + ".utilisateur_id = ? ORDER BY "
+                + "public.transaction.date DESC, public.transaction.transaction_id DESC;";
+
+        ArrayList<Transaction> trans = new ArrayList<>();
+
+        try{
+            conn = getConnection();
+            pstmt = conn.prepareStatement(SQL);
+
+            pstmt.setInt(1, userId);
+
+            rs = pstmt.executeQuery();
+
+            int i = 5;
+            while (rs.next() && i > 0) {
+
+                trans.add(new Transaction(rs.getInt(1),rs.getString(2),rs.getDouble(3),rs.getString(4),rs.getInt(5),rs.getDouble(6), rs.getInt(7)));
+                i--;
+            }
+        }
+        catch(SQLException ex){
+            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { pstmt.close(); } catch (Exception e) { /* ignored */ }
+            try { conn.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return trans;
+    }
+
 
     /** Récupère toutes les transaction d'un user et d'une catégorie donnée
      * @param userId

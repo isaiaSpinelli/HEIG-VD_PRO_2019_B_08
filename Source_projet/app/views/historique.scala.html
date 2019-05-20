@@ -19,13 +19,12 @@
                 }
                 </div>
 
-                <div><h5>Overview</h5></div>
-                <br>
+                <div style="height: 75px;"><h5>Overview</h5></div>
 
 
                 <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
+                    <thead class="">
+                        <tr style="background: #cccccc">
                             <th scope="col">Nom sous-categorie</th>
                             <th scope="col">Date</th>
                             <th scope="col">montant</th>
@@ -60,22 +59,24 @@
 
 
             <div class="col-md border shadow-lg p-4 mb-4 home-row">
-                <h5>Categorie</h5>
-                <form action="/historiqueCat">
-                    <select name="cat" class="form-control"    onchange="this.form.submit()">
-                    @for(cat <- (HomeController.DB).getAllCategories()) {
-                        @if(cat.id == catId){
-                            <option selected value="@cat.id">@cat.nom</option>
-                        } else {
-                            <option value="@cat.id">@cat.nom</option>
-                        }
+                <div style="height: 75px;">
+                    <h5>Categorie</h5>
+                    <form action="/historiqueCat">
+                        <select name="cat" class="form-control"    onchange="this.form.submit()">
+                        @for(cat <- (HomeController.DB).getAllCategories()) {
+                            @if(cat.id == catId){
+                                <option selected value="@cat.id">@cat.nom</option>
+                            } else {
+                                <option value="@cat.id">@cat.nom</option>
+                            }
 
-                    }
-                    </select>
-                </form>
+                        }
+                        </select>
+                    </form>
+                </div>
                 <table class="table">
-                    <thead class="thead-dark">
-                        <tr>
+                    <thead class="">
+                        <tr style="background: #cccccc">
                             <th scope="col">Nom sous-categorie</th>
                             <th scope="col">Date</th>
                             <th scope="col">montant</th>
