@@ -18,14 +18,14 @@ public class MonthlyExpense {
     /**
      * Solde
      */
-    public int solde;
+    public double solde;
 
 
     /**
      * @param nameMonth
      * @param solde
      */
-    public MonthlyExpense(String nameMonth, int solde){
+    public MonthlyExpense(String nameMonth, double solde){
         this.nameMonth = nameMonth;
         this.solde = solde;
     }
