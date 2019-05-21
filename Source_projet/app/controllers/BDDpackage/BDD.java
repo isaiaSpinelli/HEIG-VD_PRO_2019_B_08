@@ -1786,7 +1786,7 @@ public class BDD {
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH);
         int year = cal.get(Calendar.YEAR);
-        int soldeMois = -1;
+        double soldeMois = 0;
 
         int realMonth = month-diffNowMonth;
         if (realMonth < 0){
@@ -1849,8 +1849,8 @@ public class BDD {
      * @param IDSousCat l'ID de la sous catégorie
      * @return Le solde total d'une sous catégorie
      */
-    public int getSoldeBySousCategorie(int IDuser, int IDSousCat){
-        int Solde = -1;
+    public double getSoldeBySousCategorie(int IDuser, int IDSousCat){
+        double Solde = 0;
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement pstmt = null;
@@ -1870,7 +1870,7 @@ public class BDD {
             rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                Solde = rs.getInt(1);
+                Solde = rs.getDouble(1);
             }
         }
         catch(SQLException ex){
@@ -1890,8 +1890,8 @@ public class BDD {
      * @param IDCat     UD de la catégorie
      * @return le solde total d'un catégorie
      */
-    public int getSoldeByCategorie(int IDuser, int IDCat){
-        int Solde = 0;
+    public double getSoldeByCategorie(int IDuser, int IDCat){
+        double Solde = 0;
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement pstmt = null;
@@ -1944,6 +1944,141 @@ public class BDD {
         }
         return notifs;
 
+    }
+
+
+    /** Permet de récupérer le solde total d'un mois d'une catégorie
+     * @param idUser        ID du user
+     * @param IDSousCat     ID de la sous catégorie
+     * @param diffNowMonth  la différence de mois en fonction du mois de maintenant
+     * @return e solde total d'un mois d'une catégorie
+     */
+    public double getSoldeOverAllOneMonthBySousCategorie(int idUser, int IDSousCat,int diffNowMonth)
+    {
+        MonthlyExpense monthlyExpense = null;
+        Connection conn = null;
+        ResultSet rs = null;
+        PreparedStatement pstmt = null;
+
+        double Solde = 0;
+
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+
+        int realMonth = month-diffNowMonth;
+        if (realMonth < 0){
+            realMonth = (12 + realMonth) ;
+            year--;
+        }
+
+        String moisVoulu = String.format("%02d" , realMonth+1);
+
+        String SQL = "Select SUM(public.transaction.valeur) from public.transaction inner join public.modele_transaction \n" +
+                "\tON public.transaction.modele_transaction_id = public.modele_transaction.modele_transaction_id \n" +
+                "\tWHERE public.modele_transaction.utilisateur_id = ?  AND public.modele_transaction.sous_categorie_id = ?  AND " +
+                "public.transaction.date::text LIKE '"+year+"-"+moisVoulu+"%' \n" +
+                "\tAND public.modele_transaction.type_transaction_id = 1";
+
+        try{
+            conn = getConnection();
+            pstmt = conn.prepareStatement(SQL);
+
+            pstmt.setInt(1, idUser);
+            pstmt.setInt(2, IDSousCat);
+
+            rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Solde = rs.getDouble(1);
+            }
+
+        }
+        catch(SQLException ex){
+            Logger.getLogger(BDD.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try { rs.close(); } catch (Exception e) { /* ignored */ }
+            try { pstmt.close(); } catch (Exception e) { /* ignored */ }
+            try { conn.close(); } catch (Exception e) { /* ignored */ }
+        }
+        return Solde;
+    }
+
+    /** Permet de récupèrer le solde total d'un mois d'une catégorie
+     * @param IDuser        Id du user
+     * @param IDCat         ID de la catégorie
+     * @param diffNowMonth  Mois de différence avec le mois de now
+     * @return Le nom du mois et le solde
+     */
+    public MonthlyExpense getSoldeOneMonthByCategorie(int IDuser, int IDCat, int diffNowMonth)
+    {
+
+        String[] monthName = {"January", "February",
+                "March", "April", "May", "June", "July",
+                "August", "September", "October", "November",
+                "December"};
+
+        Calendar cal = Calendar.getInstance();
+        int month = cal.get(Calendar.MONTH);
+        int year = cal.get(Calendar.YEAR);
+        double soldeMois = 0;
+
+        int realMonth = month-diffNowMonth;
+        if (realMonth < 0){
+            realMonth = (12 + realMonth) ;
+            year--;
+        }
+
+        // Récupèration du nom du mois
+        String nameMonth = monthName[realMonth];
+
+        String moisVoulu = String.format("%02d" , realMonth+1);
+
+        // Récupère le solde total d
+        ArrayList<SousCategorie> tabSousCategories = get_Sous_categorie(IDCat);
+
+        for(SousCategorie sousCategorie : tabSousCategories){
+            soldeMois += getSoldeOverAllOneMonthBySousCategorie(IDuser, sousCategorie.id, diffNowMonth );
+        }
+
+
+        MonthlyExpense monthlyExpense = new MonthlyExpense(nameMonth,soldeMois);
+
+        return monthlyExpense;
+    }
+
+    /** Récupère le solde total d'une catégorie des 12 derniers mois
+     * @param IDuser    ID du user
+     * @param IDCat     ID de la catégorie
+     * @return le solde total d'une catégorie des 12 derniers mois
+     */
+    public MonthlyExpenseForCat getSoldeForOneYearByCategorie(int IDuser, int IDCat){
+
+        ArrayList<MonthlyExpense> listMonthlyExpense = new ArrayList<MonthlyExpense>();
+
+        for(int CompteurMois = 11; CompteurMois >= 0; --CompteurMois){
+            listMonthlyExpense.add(getSoldeOneMonthByCategorie(IDuser,IDCat,CompteurMois));
+        }
+
+        MonthlyExpenseForCat monthlyExpenseForCat = new MonthlyExpenseForCat(listMonthlyExpense,IDCat);
+
+        return monthlyExpenseForCat;
+    }
+
+    /** Pour toutes les catégorie récupère le solde des 12 derniers mois
+     * @param IDuser ID du user
+     * @return le solde des 12 derniers mois pour chaque catégorie
+     */
+    public ArrayList<MonthlyExpenseForCat> getSoldeForOneYearOfAllCategorie(int IDuser){
+
+        ArrayList<MonthlyExpenseForCat> listMonthlyExpenseForCat = new ArrayList<MonthlyExpenseForCat>();
+
+        for (Categorie categorie : get_Categories()){
+            listMonthlyExpenseForCat.add(getSoldeForOneYearByCategorie(IDuser, categorie.id ));
+
+        }
+
+        return listMonthlyExpenseForCat;
     }
 
 
