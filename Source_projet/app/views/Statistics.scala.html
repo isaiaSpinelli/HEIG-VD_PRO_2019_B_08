@@ -24,6 +24,8 @@
             ]},
         }];
 
+
+
 var names = [];
 var data = [];
         var myChart;
@@ -77,28 +79,33 @@ var data = [];
             if(myChart2 != null){
                 myChart2.destroy();
             }
-
             updateSubcatArrays();
+
             var ctx = document.getElementById('myChart2').getContext('2d');
             var colors;
-            myChart2 = new Chart(ctx, {
-                type: 'pie',
-                data: {
-                    labels: names,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: [
-                            getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
-                            getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
-                        ],
-                        borderWidth: .2
-                    }]
-                },
-                options: {
-                    responsive: true
-                }
-            });
-            
+            if(data && data.length) {
+                myChart2 = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: names,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: [
+                                getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(),
+                                getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor(), getRandomColor()
+                            ],
+                            borderWidth: .2
+                        }]
+                    },
+                    options: {
+                        responsive: true
+                    }
+                });
+            } else {
+                var div = document.createElement("DIV");
+                var text = "¯\\_(ツ)_/¯";
+                div.appendChild(text);
+            }
             // chart colors
             var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
             /* large line chart */
