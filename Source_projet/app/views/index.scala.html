@@ -21,7 +21,7 @@
         <hr class="style1">
         <br>
 
-        <div class="div-centered-panel">Last expenses</div>
+        <div class="div-centered-panel">Last movements</div>
 
         <table class="table table-striped">
           <thead>
@@ -34,7 +34,12 @@
               <tr>
                 <td>@trans.name</td>
                 <td>@trans.date</td>
-                <td>@trans.valeur</td>
+
+                @if(trans.typeTransaction == 1){
+                  <td style="color:#b94a48">-@trans.valeur</td>
+                } else{
+                  <td style="color:#53a93f">+@trans.valeur</td>
+                }
               </tr>
             }
           </tbody>
