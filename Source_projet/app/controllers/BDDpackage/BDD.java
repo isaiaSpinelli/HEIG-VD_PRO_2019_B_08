@@ -1778,10 +1778,10 @@ public class BDD {
         ResultSet rs = null;
         PreparedStatement pstmt = null;
 
-        String[] monthName = {"January", "February",
-                "March", "April", "May", "June", "July",
-                "August", "September", "October", "November",
-                "December"};
+        String[] monthName = {"Jan", "Feb",
+                "Mar", "Apr", "May", "Jun", "Jul",
+                "Aug", "Sep", "Oct", "Nov",
+                "Dec"};
 
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH);
@@ -2013,10 +2013,10 @@ public class BDD {
     public MonthlyExpense getSoldeOneMonthByCategorie(int IDuser, int IDCat, int diffNowMonth)
     {
 
-        String[] monthName = {"January", "February",
-                "March", "April", "May", "June", "July",
-                "August", "September", "October", "November",
-                "December"};
+        String[] monthName = {"Jan", "Feb",
+                "Mar", "Apr", "May", "Jun", "Jul",
+                "Aug", "Sep", "Oct", "Nov",
+                "Dec"};
 
         Calendar cal = Calendar.getInstance();
         int month = cal.get(Calendar.MONTH);

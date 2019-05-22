@@ -1,6 +1,8 @@
 @import controllers.BDDpackage.Utilisateur
 @import controllers.BDDpackage.Recurrence
 @import controllers.BDDpackage.BDD
+@import controllers.BDDpackage.MonthlyExpenseForCat
+
 
 
 
@@ -24,10 +26,18 @@
             ]},
         }];
 
+        var monthlyExpenseByCat = [@for(cat <- ((HomeController.DB).getSoldeForOneYearOfAllCategorie((HomeController.getIdSession())))){
+            {catIdtutu:'@(cat.IDCat)', listCatExp:[@for(caVaMarcher <- cat.ListmonthlyExpense) {
+                    {nameMonth: '@(caVaMarcher.nameMonth)', solde:'@(caVaMarcher.solde)'},
+                    }
+                ]},
+            }];
 
+        var names = [];
+        var data = [];
+        var data2 = [];
+        var names2 = [];
 
-var names = [];
-var data = [];
         var myChart;
         var myChart2;
 
@@ -62,6 +72,30 @@ var data = [];
 
 </script>
 
+
+<script type="text/javascript">
+        function updateSubcatArrays2() {
+
+            data2 = [];
+            names2 = [];
+
+            var sel = document.getElementById("catSelStats");
+            var selected_categorie = sel.options[sel.selectedIndex].value;
+
+            for (var cat in souscatfromscalawithexpense){
+                if(monthlyExpenseByCat[cat].catIdtutu === selected_categorie){
+
+                    for(var souscat in monthlyExpenseByCat[cat].listCatExp){
+                        data2.push(monthlyExpenseByCat[cat].listCatExp[souscat].solde);
+
+                        names2.push(monthlyExpenseByCat[cat].listCatExp[souscat].nameMonth);
+                    }
+                }
+            }
+        }
+</script>
+
+
 <script type="text/javascript">
         function getRandomColor() {
             var letters = '0123456789ABCDEF'.split('');
@@ -80,10 +114,10 @@ var data = [];
                 myChart2.destroy();
             }
             updateSubcatArrays();
+            updateSubcatArrays2();
 
             var ctx = document.getElementById('myChart2').getContext('2d');
             var colors;
-            if(data && data.length) {
                 myChart2 = new Chart(ctx, {
                     type: 'pie',
                     data: {
@@ -101,19 +135,15 @@ var data = [];
                         responsive: true
                     }
                 });
-            } else {
-                var div = document.createElement("DIV");
-                var text = "¯\\_(ツ)_/¯";
-                div.appendChild(text);
-            }
+
             // chart colors
             var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
             /* large line chart */
             var chLine = document.getElementById("chLine2");
             var chartData = {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+                labels: names2,
                 datasets: [{
-                    data: [10, 20, 120, 5, 0, 200, 36, 120, 5, 0, 200, 36],
+                    data: data2,
                     backgroundColor: colors[0],
                     borderColor: colors[0],
                     borderWidth: 4,
@@ -146,6 +176,7 @@ var data = [];
         }
 </script>
 
+
 <script type="text/javascript">
         function displayExpenseOverall(){
             var ctx = document.getElementById('myChart').getContext('2d');
@@ -155,7 +186,7 @@ var data = [];
                     labels: [@for(cat <- ((HomeController.DB).getAllCategories())){
                         @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
                         '@(cat.getName())',}
-                        }],//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                        }],
                     datasets: [{
                         data: [@for(cat <- ((HomeController.DB).getAllCategories())){
                             @if(((HomeController.DB).getSumExpensesOnSpecialPeriodCategorie((HomeController.getIdSession()),cat.id,idRecurrence)) != 0){
@@ -183,7 +214,9 @@ var data = [];
             /* large line chart */
             var chLine = document.getElementById("chLine");
             var chartData = {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Nov", "Oct", "Dec"],
+                labels: [@for(laThuneFrr <- ((HomeController.DB).getSoldeOverAllOneYear((HomeController.getIdSession())))){
+                    '@(laThuneFrr.nameMonth)',
+                    }],
                 datasets: [{
                     data: [@for(laThuneFrr <- ((HomeController.DB).getSoldeOverAllOneYear((HomeController.getIdSession())))){
                         '@(laThuneFrr.solde)',
