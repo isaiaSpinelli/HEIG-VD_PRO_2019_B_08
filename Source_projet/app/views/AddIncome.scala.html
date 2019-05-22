@@ -101,7 +101,7 @@ Permet d'afficher une liste de sous catégorie
             var tmpAmount = Math.round(document.getElementById("amountIdIncome").value * 100) / 100;
 
             //Calcul solde après mouvement
-            var finalSolde = Math.round(( @HomeController.getUserSession().getSolde() - tmpAmount) * 100) / 100;
+            var finalSolde = Math.round(( @HomeController.getUserSession().getSolde() + tmpAmount) * 100) / 100;
 
             //Création des affichages
             textAmount = textAmount.concat(tmpAmount);
