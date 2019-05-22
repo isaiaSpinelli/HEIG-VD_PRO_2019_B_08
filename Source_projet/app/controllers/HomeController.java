@@ -419,11 +419,16 @@ public class HomeController extends Controller {
         }
 
 
-
-        int idSubCat = Integer.parseInt(form.get("sous-categorie"));
-
-        //return ok(views.html.index.render(Integer.toString(amount),user));
-        //return ok(views.html.index.render(Double.toString(amount),user));
+        // Gestion de la sous catégorie en fonction du nouveau mouvement
+        int idSubCat ;
+        if (form.get("sous-categorie") == null){
+            idSubCat = DB.getSousCategorieID("Sans catégorisation");
+        } else {
+            idSubCat = Integer.parseInt(form.get("sous-categorie"));
+        }
+        if(id_trans == 2 && idSubCat == 0 ){
+            idSubCat = DB.getSousCategorieID("Revenu");
+        }
 
         int userId = this.getIdSession();
         int recId = Integer.parseInt(form.get("recurrence"));
