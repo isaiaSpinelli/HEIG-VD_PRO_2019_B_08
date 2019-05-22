@@ -1172,15 +1172,8 @@ public class BDD {
             //pstmt.setBigDecimal(1, valeur);
             pstmt.setString(1, note);
             pstmt.setInt(2, userID);
-            //Gestion sans categorisation;
-            if (idSousCategorie == 0)
-            {
-                pstmt.setInt(3, 98);
-            }
-            else
-            {
-                pstmt.setInt(3, idSousCategorie);
-            }
+
+            pstmt.setInt(3, idSousCategorie);
 
             pstmt.setInt(4, idTypeTrans);
             if(recurrenceId == 0){
