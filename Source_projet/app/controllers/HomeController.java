@@ -1,7 +1,6 @@
 package controllers;
 
 import controllers.BDDpackage.BDD;
-
 import controllers.BDDpackage.Categorie;
 import controllers.BDDpackage.SousCategorie;
 import controllers.BDDpackage.Utilisateur;
@@ -19,30 +18,53 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.util.*;
 import java.util.HashSet;
 import play.Configuration;
-
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+
 /**
- * This controller contains an action to handleHTTP requests
- *  to the application's home page.
+ * Cette classe permet de faire le hanlde entre les actions à faire en fonction des requêtes HTTP
  */
 public class HomeController extends Controller {
 
+    /**
+     * Permet d'avoir une pool de connection partagé avec les users
+     */
     public static BDD DB ;
+    /**
+     * Nom du paramètre ayant le username de la BDD
+     */
     private static final String DB_USERNAME="db.default.username";
+    /**
+     * Nom du paramètre ayant le mot de passe de la BDD
+     */
     private static final String DB_PASSWORD="db.default.password";
+    /**
+     * Nom du paramètre ayant l'URL de la BDD
+     */
     private static final String DB_URL ="db.default.url";
 
 
+    /**
+     * Permet d'avoir accès à la configuration de la base de donnée
+     */
     private final Configuration configuration;
 
 
+    /**
+     * Permet de récupèrer des informations d'une requête POST
+     */
     private final FormFactory formFactory;
+    /**
+     * Permet d'afficher un message à un user
+     */
     private String errorMessageLogin = "";
 
 
+    /** Constructeur appelé a chaque lancement de l'app
+     * @param formFactory   Permet de récupèrer des informations d'une requête POST
+     * @param configuration Permet d'avoir accès à la configuration de la base de donnée
+     */
     @Inject
     public HomeController(FormFactory formFactory, Configuration configuration) {
         this.configuration = configuration;
@@ -55,13 +77,11 @@ public class HomeController extends Controller {
         DB = new BDD(url, user, passwd);
     }
 
-    /**
-     * An action that renders an HTML page with a welcome message.
-     * The configuration in the <code>routes</code> file means that
-     * this method will be called when the application receives a
-     * <code>GET</code> request with a path of <code>/</code>.
+
+    /** Méthode appellé lors d'une requête GET sur /
+     * Gère s'il y a une session valide
+     * @return le page HTML à afficher
      */
-    // Page d'accueil
     public Result index()  throws SQLException {
 
         if (session("userID") == null){
@@ -72,7 +92,9 @@ public class HomeController extends Controller {
         }
     }
 
-    // Page d'accueil
+    /** Prépare la page HTML pour les statistiques et contrôle la session
+     * @return le page HTML à afficher
+     */
     public Result Statistics()  throws SQLException {
         if (session("userID") == null){
             return ok( views.html.Login.render(errorMessageLogin,this.getUserSession()));
@@ -82,7 +104,9 @@ public class HomeController extends Controller {
 
     }
 
-    // Gestion du login
+    /** Gère le login d'un user
+     * @return le page HTML à afficher
+     */
     public Result LoginSubmit() {
 
         DynamicForm form = formFactory.form().bindFromRequest();
@@ -98,6 +122,9 @@ public class HomeController extends Controller {
 
     }
 
+    /** Permet de récupère en tout temps l'id de la session en cours
+     * @return l'id du user en cours
+     */
     public static int getIdSession(){
 
         int id = 0;
@@ -106,21 +133,23 @@ public class HomeController extends Controller {
 
         } else {
             idS = session("userID");
-            // System.out.println(("id is: " + idS));
             id = Integer.parseInt(idS);
         }
-
         return id;
     }
 
+    /** Permet de récupèrer les informations du user connecté
+     * @return le user connecté à la session
+     */
     public static Utilisateur getUserSession(){
         return DB.UtilisateurByID(getIdSession());
     }
 
-    //Gestion nouvel utilisateur
+    /** Gestion d'un nouvel utilisateur
+     * @return le page HTML à afficher
+     */
     public Result RegisterSubmit(){
         DynamicForm form = formFactory.form().bindFromRequest();
-
 
         //Gestion erreur
         boolean error = false;
@@ -222,7 +251,9 @@ public class HomeController extends Controller {
 
     }
 
-    //Gestion affichage submit
+    /** Gestion affichage submit
+     * @return le page HTML à afficher
+     */
     public Result Register(){
 
         //Recuperation pays pour affichage
@@ -236,7 +267,9 @@ public class HomeController extends Controller {
         return ok(views.html.register.render(pays,statut,null,this.getUserSession()));
     }
 
-    // Exemple pour passer un paramètre de java -> HTML
+    /** Affiche le profil du user
+     * @return le page HTML à afficher
+     */
     public Result Profil() {
         // Get user_id
         if(this.getIdSession() == 0)
@@ -251,16 +284,19 @@ public class HomeController extends Controller {
 
     }
 
-    //Gestion de la déconnection
+    /** Gestion de la déconnection
+     * @return le page HTML à afficher
+     */
     public Result Disconnect(){
-        //user = new Utilisateur();
         session().clear();
         errorMessageLogin = "";
         return redirect("/profil");
 
     }
 
-    // Exemple pour passer un paramètre de java -> HTML
+    /** Affiche la page des catégories
+     * @return le page HTML à afficher
+     */
     public Result Categorie() {
 
         // Si il n'est pas loggé
@@ -277,7 +313,10 @@ public class HomeController extends Controller {
         }
     }
 
-    // Permet d'ajouter une sous catégorie à la base de donnée
+    /** Permet d'ajouter une sous catégorie à la base de donnée
+     * @param defaultSelect la séléction par défaut de la sous catégorie
+     * @return le page HTML à afficher
+     */
    public Result sousCategorie(String defaultSelect ) {
         // Envoie la liste de toute les catégories au HTML
        ArrayList<Categorie> listCategorie = new ArrayList<Categorie>();
@@ -286,7 +325,9 @@ public class HomeController extends Controller {
         return ok( views.html.sousCategorie.render( listCategorie, defaultSelect,this.getUserSession()) );
     }
 
-    // Permet d'ajouter une sous catégorie
+    /** Permet d'ajouter une sous catégorie
+     * @return le page HTML à afficher
+     */
     public Result addSousCategorie() {
 
         DynamicForm form = formFactory.form().bindFromRequest();
@@ -303,8 +344,6 @@ public class HomeController extends Controller {
             return redirect("/profil");
         }
 
-
-
         int alerte = 2;
         String message = "Insertion successful ";
 
@@ -313,7 +352,6 @@ public class HomeController extends Controller {
         // Cree la sous catégore souhaitée
         SousCategorie sousCategorie = new SousCategorie(nom, categorieChoisi );
 
-        // Test la valeur de retour !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Ajout d'une notif 
         if (!DB.insert_Sous_categorie( sousCategorie, idUser)){
             alerte = 1;
@@ -325,6 +363,9 @@ public class HomeController extends Controller {
     }
 
     // Gestion des options
+    /** Afiche le profil du user
+     * @return le page HTML à afficher
+     */
     public Result ModifOptions()
     {
         if(this.getIdSession() == 0)
@@ -337,9 +378,12 @@ public class HomeController extends Controller {
         }
     }
 
+    /** Permet de modifier les options du user
+     * @param Option Nouvelle option
+     * @return le page HTML à afficher
+     */
     public Result ModifOptionsSub(String Option)
     {
-        //return ok(views.html.index.render(Option));
         if(this.getIdSession() == 0)
         {
             return ok(views.html.index.render("Compact Budget",this.getUserSession()));
@@ -350,7 +394,6 @@ public class HomeController extends Controller {
             if(ret)
             {
                 int valco = this.getIdSession();
-                // ?? user = DB.UtilisateurByID(valco);
                 return redirect("/profil");
             }
             else
@@ -360,6 +403,9 @@ public class HomeController extends Controller {
         }
     }
 
+    /** Permet de modifier le profil du user
+     * @return le page HTML à afficher
+     */
     public Result ModifProfile() {
         if (this.getIdSession() == 0) {
             session().clear();
@@ -385,7 +431,6 @@ public class HomeController extends Controller {
                         , Integer.parseInt(form.get("pays")));
                 if(ret)
                 {
-                    // ?? user = DB.UtilisateurByID(this.getIdSession());
                     return redirect("/profil");
                 }
                 else
@@ -399,16 +444,27 @@ public class HomeController extends Controller {
         }
     }
 
+    /** Ajout d'un revenu au user
+     * @return le page HTML à afficher
+     */
     public Result AddExpense(){
 
         return ModelTrans(1);
     }
 
+    /** Ajoute une dépense au user
+     * @return le page HTML à afficher
+     */
     public Result AddIncome(){
 
         return ModelTrans(2);
     }
 
+
+    /** Permet d'ajouter un modèle de transaction
+     * @param id_trans      ID du type de transaction (Dépense/Revenu)
+     * @return le page HTML à afficher
+     */
     private Result ModelTrans(int id_trans){
         DynamicForm form = formFactory.form().bindFromRequest();
 
@@ -435,11 +491,14 @@ public class HomeController extends Controller {
         String note = form.get("note");
 
         int result = DB.addMovement(userId,amount,idSubCat,recId,note,id_trans);
-        // ?? user = DB.UtilisateurByID(userId);
+
         return redirect("/");
 
     }
 
+    /** Affiche la page de l'historique
+     * @return le page HTML à afficher
+     */
     public Result Historique()
     {
         if(this.getIdSession() == 0)
@@ -449,6 +508,10 @@ public class HomeController extends Controller {
         return ok(views.html.historique.render("Historique",this.getUserSession(),1));
     }
 
+    /** Permet d'afficher l'historiques d'une catégorie spécifique
+     * @param cat ID de la catégorie souhaitée
+     * @return le page HTML à afficher
+     */
     public Result historiqueCat(int cat)
     {
         if(this.getIdSession() == 0)
@@ -458,7 +521,9 @@ public class HomeController extends Controller {
         return ok(views.html.historique.render("Historique",this.getUserSession(),cat));
     }
 
-    /* Permet de créer le PDF de l'historique d'un utilisateur*/
+    /** Permet de créer le PDF de l'historique d'un utilisateur
+     * @return le page HTML à afficher
+     */
     public Result creePDF()
     {
         DynamicForm form = formFactory.form().bindFromRequest();
@@ -483,11 +548,13 @@ public class HomeController extends Controller {
             message = "Successfull PDF !";
         }
 
-
         // Retourne sur la page des Historiques
         return ok( views.html.utilisateur.render( user,alerte,message) );
     }
 
+    /** Ajout une nouvelle limite au user
+     * @return le page HTML à afficher
+     */
     public Result AddLimit()
     {
         DynamicForm form = formFactory.form().bindFromRequest();
@@ -505,6 +572,9 @@ public class HomeController extends Controller {
         return redirect("/");
     }
 
+    /** Affiche la page des notifications du user
+     * @return le page HTML à afficher
+     */
     public Result Notification()
     {
         if(this.getIdSession() == 0)

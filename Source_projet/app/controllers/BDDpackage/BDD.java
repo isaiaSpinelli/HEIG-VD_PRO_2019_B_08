@@ -25,16 +25,11 @@ import java.util.Date;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-
 import javax.sql.DataSource;
-
 import play.db.*;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-
-
 import java.util.Calendar;
-
 import controllers.BDDpackage.MonthlyExpense;
 
 
@@ -62,9 +57,6 @@ public class BDD {
      */
     private static String driver = "org.postgresql.Driver";
 
-    // Pour Gab
-    // private Connection conn = null;
-
     /**
      * Le pool des connections pour la base de donnée
      */
@@ -73,23 +65,6 @@ public class BDD {
      * la configuration pour le pool
      */
     private static HikariConfig config = new HikariConfig();
-
-    /*
-    static
-    {
-        config.setJdbcUrl(url);
-        config.setUsername(user);
-        config.setPassword(password);
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        config.setMaximumPoolSize(300);
-        config.setMinimumIdle(30);
-        pool = new HikariDataSource(config);
-    }*/
-
-
-
 
     /**
      * Retourne le nom de l'utilisateur
@@ -112,27 +87,16 @@ public class BDD {
      * @param user      user de la base de donnée
      * @param password  password de la base de donnée
      */
-    // Permet de mettre à jour les configurations de la base de donées
     public BDD(String url, String user, String password){
         this.url = url;
         this.user = user;
         this.password = password;
 
         this.Connection();
-        /* Pour Gab
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        */
-
-
     }
 
-    /** Met en place le pooling des connections à la base de donnée
-     *
+    /**
+     * Met en place le pooling des connections à la base de donnée
      */
     private void Connection(){
 
@@ -192,19 +156,19 @@ public class BDD {
         return pool;
     }
 
+    /** Récupère une connection à la base de donnée
+     * @return une connection à la base de donnée
+     */
     public static Connection getConnection(){
-        // Pour gab (commente tout sauf le retourne)
         Connection conn = null;
         try {
             conn = pool.getConnection();
-            // System.out.println("Connected to the PostgreSQL server successfully.");
         } catch (Exception e) {
             System.out.println("Error connection !");
             System.out.println(e.getMessage());
         }
         return conn;
     }
-
 
 
     /**
@@ -571,7 +535,7 @@ public class BDD {
      * @param email
      * @param pseudo
      * @param userId
-     * @return
+     * @return le résultat de la validation
      */
     private boolean checkUniqueUserWithId(String email, String pseudo, int userId) {
         Connection conn = null;
@@ -611,7 +575,7 @@ public class BDD {
      * @param statut_id
      * @param pays_id
      * @param options_id
-     * @param solde
+     * @param solde         Solde de base du user
      * @return retourne l'ID du user ou 0 en cas d'echec
      */
     private int insert_Utilisateurs(String prenom, String nom,String email,String pseudo,String mdp,Boolean genre,String anniversaire,int statut_id, int pays_id, int options_id, double solde){
@@ -1191,7 +1155,7 @@ public class BDD {
         }
     }
 
-    /**
+    /** Permet de récupèrer les dépenses d'une catégorie
      * @param userId
      * @param cat
      * @param idRecurence
@@ -1226,9 +1190,9 @@ public class BDD {
 
     }
 
-    /**
-     * @param idRecurrence
-     * @return
+    /** Converssion entre une récurrence et le nombre de jour
+     * @param idRecurrence l'ID de la récurrence
+     * @return le nombre de jour
      */
     private int translateRecurrenceInDays(int idRecurrence)
     {
@@ -1496,7 +1460,7 @@ public class BDD {
 
     }
 
-    /**
+    /** Met à jour les sous catégories personnels
      * @param id_sous_cat
      * @param id_user
      */
@@ -1521,7 +1485,7 @@ public class BDD {
     /** Test si une sous catégoire appartient à un user
      * @param sousCat_id    ID de la sous catégorie
      * @param user_id
-     * @return true si elle est au user
+     * @return true si elle appartient au user
      */
     public boolean belongToUser(int sousCat_id, int user_id) {
 
@@ -1727,16 +1691,6 @@ public class BDD {
     }
 
 
-    /*public ArrayList<Transaction> getAllTransactionWithRatio(int userId, int ratio)
-    {
-        ArrayList<Transaction> result = getAllTransaction(userId);
-        ArrayList<Transaction> retArr = new ArrayList<Transaction>;
-        if(result.size > ratio * 10)
-        {
-
-        }
-    }*/
-
     /** Fonction permettant la mise à jour des paiements recurrents via un appel a la procedure prevue a cet effet
      * @param user_id ID de l'utilisateur à mettre a jour
      */
@@ -1924,8 +1878,6 @@ public class BDD {
                 notifs.add(new Notification(rs.getString(2),rs.getString(3)));
 
             }
-
-           //  System.out.println(notifs.at(0).titre,notifs.at(0).message);
 
         }
         catch(SQLException ex){

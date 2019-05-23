@@ -2,11 +2,11 @@
 
 host : 10.192.72.67
 login: heiguser
-password: m6jBrN!Bjy9Qj8#v 
+password: bddeasypassword
 (il est possible de copier le mdp et le coller via le "click droit")
 
 // Connection à la base de donnée via SSH
 	1. Il faut donc utiliser un tunnel SSH (Poer 22)
 	2. host : 10.192.72.67
 	3. user : postgres
-	4. mdp  : m6jBrN!Bjy9Qj8#v 
+	4. mdp  : bddeasypassword
