@@ -15,18 +15,14 @@ Development team:
 
 ## Dependance
 
--
+- Ce programme nécéssite le jdk 1.8 pour fonctionner ainsi que le framework Play 2.7
 
 ## Build et installation
 
--
-
-## Lancement
-
--
+- https://github.com/BasileBotebol/Deploiement_PRO/
 
 ## Documentation
 
-User manual: see file xxxxx.
+Manuel utilisateur: Voir "Manuel Utilisateur.pdf".
 
-API documentation: see file yyyyy.
+API documentation: La documentation javadoc peut être directement générée au traver de sbt avec la commande `doc`. 
